@@ -1,6 +1,6 @@
 #!/bin/bash
 echo initializing dotfiles 
-if [ ! -d "~/dotfiles/" ]; then
+if [ ! -d "$HOME/dotfiles/" ]; then
 	cd ~/
 	git clone https://github.com/xysmas/dotfiles.git
 	echo i'm in `pwd`
