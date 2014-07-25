@@ -29,4 +29,4 @@ alias go='git checkout '
 alias gk='gitk --all&'
 alias gx='gitx --all'
 
-export $mywebsite='u54505173@blog.aarongonzales.net'
+export mywebsite="u54505173@blog.aarongonzales.net"
