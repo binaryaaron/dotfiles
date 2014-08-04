@@ -14,3 +14,5 @@
 	dump = cat-file -p
 [color]
 	ui = auto
+[core]
+	excludesfile = /Users/agonzales/.gitignore_global
