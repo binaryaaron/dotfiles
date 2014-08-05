@@ -72,6 +72,8 @@ Thumbs.db
 *.mtc1
 *.out
 *.synctex.gz
+*.run.xml
+*.bcf
 
 # Mac IDE files
 *.swp
