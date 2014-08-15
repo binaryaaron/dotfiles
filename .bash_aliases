@@ -1,7 +1,7 @@
-alias l='ls -l -h -G'
-alias ls='ls -C -G'
+alias l='ls -l -h -G --color'
+alias ls='ls -C -G --color'
 alias cls='clear'
-alias ll='ls -h -C -G -all'
+alias ll='ls -h -C -G -all --color'
 
 alias prename='perl ~/dotfiles/prename.perl'
 

@@ -12,4 +12,7 @@ if [ -d "$HOME/dotfiles" ]; then
 	ln -s ~/dotfiles/.bashrc ~/.bashrc 
 	ln -s ~/dotfiles/.bash_aliases ~/.bash_aliases 
 	ln -s ~/dotfiles/.bash_profile ~/.bash_profile 
+	ln -s ~/dotfiles/.dircolors ~/.dircolors
 fi
+	
+dconf write /org/gnome/desktop/input-sources/xkb-options "['caps:escape']"
