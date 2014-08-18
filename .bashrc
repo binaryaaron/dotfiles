@@ -64,6 +64,7 @@ xterm*|rxvt*)
 *)
     ;;
 esac
+eval `dircolors ~/.dircolors`
 
 # enable color support of ls and also add handy aliases
 if [ -x $HOME/.dircolors ]; then
