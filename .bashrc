@@ -125,3 +125,6 @@ export DYLD_FALLBACK_LIBRARY_PATH=$HOME/abin
 export PATH=/Developer/NVIDIA/CUDA-5.5/bin:$PATH
 export DYLD_LIBRARY_PATH=/Developer/NVIDIA/CUDA-5.5/lib:$DYLD_LIBRARY_PATH
 export PATH=/usr/local/afni/bin:$PATH
+export LAPACK=/usr/lib/liblapack.so
+export ATLAS=/usr/lib/libatlas.so.3
+export BLAS=/usr/lib/atlas-base/libcblas.so.3
