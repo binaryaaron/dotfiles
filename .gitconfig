@@ -1,6 +1,6 @@
 [user]
 	name = Aaron Gonzales
-	email = xysmas@gmail.com
+	email = agonzales@cs.unm.edu
 [filter "media"]
 	clean = git-media-clean %f
 	smudge = git-media-smudge %f
