@@ -103,17 +103,12 @@ fi
 
 	# enables vi style commands on the command line
 set -o vi
-. /sw/bin/init.sh 
+. /sw/bin/init.sh
 
 				#ENV variables#
 #########################################################################
-export scripting=$HOME/scripting/
 
-export desktop=~/Desktop
 
-export bearerfolder="/Volumes/EFT/Bearer\ Lab/AaronGonzales"
-#export DYLD_LIBRARY_PATH=/Users/aarongonzales/Documents/MATLAB/dip/Darwin/lib
-#export LD_LIBRARY_PATH=/Users/aarongonzales/Documents/MATLAB/dip/Darwin/lib
 
 # FSL Configuration
 FSLDIR=/usr/local/fsl
