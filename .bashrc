@@ -120,21 +120,10 @@ set -o vi
 
 				#ENV variables#
 #########################################################################
-export scripting=$HOME/scripting/
+$PATH=$(brew --prefix coreutils)/libexec/gnubin:$PATH
 
-export desktop=~/Desktop
 
-export bearerfolder="/Volumes/EFT/Bearer\ Lab/AaronGonzales"
-#export DYLD_LIBRARY_PATH=/Users/aarongonzales/Documents/MATLAB/dip/Darwin/lib
-#export LD_LIBRARY_PATH=/Users/aarongonzales/Documents/MATLAB/dip/Darwin/lib
 
-# FSL Configuration
-FSLDIR=/usr/local/fsl
-PATH=${FSLDIR}/bin:${PATH}
-. ${FSLDIR}/etc/fslconf/fsl.sh
-export FSLDIR PATH
-export PATH=/Volumes/analysis/software/nifty_reg/nifty_reg/reg-apps/:$PATH
-export DYLD_FALLBACK_LIBRARY_PATH=$HOME/abin
-export PATH=/Developer/NVIDIA/CUDA-5.5/bin:$PATH
-export DYLD_LIBRARY_PATH=/Developer/NVIDIA/CUDA-5.5/lib:$DYLD_LIBRARY_PATH
-export PATH=/usr/local/afni/bin:$PATH
+export PATH=/Users/agonzales/torch/install/bin:$PATH  # Added automatically by torch-dist
+export LD_LIBRARY_PATH=/Users/agonzales/torch/install/lib:$LD_LIBRARY_PATH  # Added automatically by torch-dist
+export DYLD_LIBRARY_PATH=/Users/agonzales/torch/install/lib:$DYLD_LIBRARY_PATH  # Added automatically by torch-dist

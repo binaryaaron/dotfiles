@@ -1,24 +1,26 @@
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+brew install git
+brew install python3
+
 brew tap caskroom/cask
 brew install brew-cask
+brew cask install google-chrome
 brew cask install dropbox
 brew cask install vlc
-brew install git
-git --version
-which git
-brew install python3
-pip install --upgrade setuptools
+brew cask install sublime-text
+
+brew update
+
 pip3 install --upgrade setuptools
 pip3 install --upgrade pip
-pip install virtualenv
 pip3 install virtualenv
+
 brew tap samueljohn/python
 brew tap homebrew/science
 brew install gfortran
 brew install gcc
-# brew install gcc
-# brew tap samueljohn/python
-# brew tap homebrew/science
-brew update 
+brew install pandoc
+
 pip3 install nose
 pip3 install pyparsing
 pip3 install python-dateutil
@@ -39,11 +41,8 @@ pip3 install ipython3-notebook
 pip3 install pandas
 pip3 install gensim
 
-pip3 install symPy
 pip3 install statsmodels
 pip3 install shogun
-pip3 install pyBrain
-pip3 install pyLearn2
 pip3 install pyMC
 pip3 install bokeh
 pip3 install d3py
@@ -56,4 +55,23 @@ pip3 install csvkit
 pip3 install tables
 pip3 install sqlite3
 pip3 install theano
-pip3 install keras
+
+
+# haskell?
+
+
+# node
+
+brew install node
+brew install mysql
+
+
+
+# jekyll
+gem install jekyll
+
+
+# R
+brew cask install xquartz
+brew install R
+sudo su -c "R -e \"install.packages('shiny','knitr','ggplot2', 'car','plyr', repos='http://cran.rstudio.com/')\""

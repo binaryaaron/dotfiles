@@ -1,10 +1,4 @@
 #!/bin/bash
-echo initializing dotfiles 
-if [ ! -d "$HOME/dotfiles/" ]; then
-	cd $HOME
-	git clone https://github.com/xysmas/dotfiles.git
-fi
-
 if [ -d "$HOME/dotfiles" ]; then
 	echo 'making symlinks'
 	ln -s ~/dotfiles/.gitconfig ~/.gitconfig 
@@ -15,4 +9,3 @@ if [ -d "$HOME/dotfiles" ]; then
 	ln -s ~/dotfiles/.dircolors ~/.dircolors
 fi
 	
-dconf write /org/gnome/desktop/input-sources/xkb-options "['caps:escape']"

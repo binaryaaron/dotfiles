@@ -98,39 +98,4 @@ fi
 	# enables vi style commands on the command line
 set -o vi
 
-
-				#ENV variables#
-#########################################################################
-
-export desktop=~/Desktop
-
-#export DYLD_LIBRARY_PATH=/Users/aarongonzales/Documents/MATLAB/dip/Darwin/lib
-#export LD_LIBRARY_PATH=/Users/aarongonzales/Documents/MATLAB/dip/Darwin/lib
-
-# FSL Configuration
-FSLDIR=/usr/local/fsl
-PATH=${FSLDIR}/bin:${PATH}
-. ${FSLDIR}/etc/fslconf/fsl.sh
-export FSLDIR PATH
-
-# Setting PATH for Python 2.7
-# The orginal version is saved in .bash_profile.pysave
-PATH="/Library/Frameworks/Python.framework/Versions/2.7/bin:${PATH}"
-export PATH
-
-
-##
-# Your previous /Users/agonzales/.bash_profile file was backed up as /Users/agonzales/.bash_profile.macports-saved_2013-06-07_at_13:37:03
-##
-
-
-FSLDIR=/usr/local/fsl
-PATH=${FSLDIR}/bin:${PATH}
-. ${FSLDIR}/etc/fslconf/fsl.sh
-export PATH=/usr/local/bin:$PATH
-export FSLDIR PATH
-export PATH=/Volumes/analysis/software/nifty_reg/nifty_reg/reg-apps/:$PATH
-export DYLD_FALLBACK_LIBRARY_PATH=$HOME/abin
-export PATH=/Developer/NVIDIA/CUDA-5.5/bin:$PATH
-export DYLD_LIBRARY_PATH=/Developer/NVIDIA/CUDA-5.5/lib:$DYLD_LIBRARY_PATH
-export PATH=/usr/local/afni/bin:$PATH
+export JAVA_HOME="$(/usr/libexec/java_home)"
