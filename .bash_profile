@@ -98,4 +98,5 @@ fi
 	# enables vi style commands on the command line
 set -o vi
 
-export JAVA_HOME="$(/usr/libexec/java_home)"
+# export JAVA_HOME="$(/usr/libexec/java_home)"
+# export PATH=$PATH:$JAVA_HOME/bin

@@ -15,4 +15,11 @@ alias go='git checkout '
 alias gk='gitk --all&'
 alias gx='gitx --all'
 
-export mywebsite="u54505173@blog.aarongonzales.net"
+if [ -n "$PS1" -a -f /home/site/warehouse/common/config/warehouserc.bash ]; then
+      source /home/site/warehouse/common/config/warehouserc.bash
+fi
+
+export PATH="$(brew --prefix coreutils)/libexec/gnubin:/usr/local/bin:$PATH"
+
+# export TRTOP=$HOME/site/trsrc-MAINLINE
+# export PATH=$PATH:$JAVA_HOME/bin:$TRTOP/scripts
