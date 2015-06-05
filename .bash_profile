@@ -98,7 +98,4 @@ fi
 	# enables vi style commands on the command line
 set -o vi
 
-export JAVA_HOME="$(/usr/libexec/java_home)"
 
-# added by Anaconda3 2.2.0 installer
-export PATH="/Users/agonzales/anaconda/bin:$PATH"

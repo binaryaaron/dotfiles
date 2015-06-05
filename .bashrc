@@ -118,12 +118,4 @@ fi
 set -o vi
 . /sw/bin/init.sh 
 
-				#ENV variables#
-#########################################################################
-$PATH=$(brew --prefix coreutils)/libexec/gnubin:$PATH
 
-
-
-export PATH=/Users/agonzales/torch/install/bin:$PATH  # Added automatically by torch-dist
-export LD_LIBRARY_PATH=/Users/agonzales/torch/install/lib:$LD_LIBRARY_PATH  # Added automatically by torch-dist
-export DYLD_LIBRARY_PATH=/Users/agonzales/torch/install/lib:$DYLD_LIBRARY_PATH  # Added automatically by torch-dist
