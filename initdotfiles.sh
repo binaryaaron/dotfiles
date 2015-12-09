@@ -7,5 +7,6 @@ if [ -d "$HOME/dotfiles" ]; then
 	ln -s ~/dotfiles/.bash_aliases ~/.bash_aliases 
 	ln -s ~/dotfiles/.bash_profile ~/.bash_profile 
 	ln -s ~/dotfiles/.dircolors ~/.dircolors
+	ln -s ~/dotfiles/.latexmkrc ~/.latexmkrc
 fi
 	

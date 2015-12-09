@@ -1,4 +1,4 @@
-# ~/.bashrc: executed by bash(1) for non-login shells.
+# ~/.bash_profile: executed by bash(1) for login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
@@ -36,7 +36,7 @@ esac
 # uncomment for a colored prompt, if the terminal has the capability; turned
 # off by default to not distract the user: the focus in a terminal window
 # should be on the output of commands, not on the prompt
-force_color_prompt=yes
+# force_color_prompt=yes
 
 if [ -n "$force_color_prompt" ]; then
     if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
@@ -65,9 +65,13 @@ xterm*|rxvt*)
     ;;
 esac
 
+#eval `/usr/local/opt/coreutils/libexec/gnubin/dircolors $HOME/.dircolors`
+#added since it's in homebrew coreutils
+DIRCOLORS=/usr/local/opt/coreutils/libexec/gnubin/dircolors
+
 # enable color support of ls and also add handy aliases
-if [ -x /usr/bin/dircolors ]; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+if [ -f $HOME/.dircolors ]; then
+    test -r ~/.dircolors && eval "$($DIRCOLORS -b ~/.dircolors)" || eval "$($DIRCOLORS -b)"
     alias ls='ls -CF --color=auto'
     #alias dir='dir --color=auto'
     #alias vdir='vdir --color=auto'
@@ -76,6 +80,7 @@ if [ -x /usr/bin/dircolors ]; then
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
 fi
+
 
 # some more ls aliases
 
@@ -95,7 +100,8 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
 
-	# enables vi style commands on the command line
+# enables vi style commands on the command line
 set -o vi
+
 
 
