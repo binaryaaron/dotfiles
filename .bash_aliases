@@ -24,9 +24,10 @@ export PATH="$(brew --prefix coreutils)/libexec/gnubin:/usr/local/bin:$PATH"
 # export TRTOP=$HOME/site/trsrc-MAINLINE
 # export PATH=$PATH:$JAVA_HOME/bin:$TRTOP/scripts
 export PATH="/Users/agonzales/anaconda3/bin:$PATH"
+export PATH="/Users/agonzales/.cabal/bin:$PATH"
+# export PATH=~/anaconda/bin:"$PATH"
 source /opt/homebrew-cask/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.bash.inc
 source /opt/homebrew-cask/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.bash.inc
-export CLOUDSDK_PYTHON=/usr/bin/python2.7
 
 
 # get current branch in git repo
@@ -80,3 +81,4 @@ function parse_git_dirty {
 export metropolis="sidd@metropolis.alliance.unm.edu"
 export galles="sidd@galles.alliance.unm.edu"
 
+alias latexmk='latexmk -xelatex -pvc'
