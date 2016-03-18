@@ -16,3 +16,5 @@
 	ui = auto
 [core]
 	excludesfile = /Users/agonzales/.gitignore_global
+[push]
+	default = simple

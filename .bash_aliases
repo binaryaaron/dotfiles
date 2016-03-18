@@ -19,17 +19,6 @@ if [ -n "$PS1" -a -f /home/site/warehouse/common/config/warehouserc.bash ]; then
       source /home/site/warehouse/common/config/warehouserc.bash
 fi
 
-export PATH="$(brew --prefix coreutils)/libexec/gnubin:/usr/local/bin:$PATH"
-
-# export TRTOP=$HOME/site/trsrc-MAINLINE
-# export PATH=$PATH:$JAVA_HOME/bin:$TRTOP/scripts
-export PATH="/Users/agonzales/anaconda3/bin:$PATH"
-export PATH="/Users/agonzales/.cabal/bin:$PATH"
-# export PATH=~/anaconda/bin:"$PATH"
-source /opt/homebrew-cask/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.bash.inc
-source /opt/homebrew-cask/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.bash.inc
-
-
 # get current branch in git repo
 function parse_git_branch() {
         BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
@@ -82,3 +71,18 @@ export metropolis="sidd@metropolis.alliance.unm.edu"
 export galles="sidd@galles.alliance.unm.edu"
 
 alias latexmk='latexmk -xelatex -pvc'
+
+export PATH="$(brew --prefix coreutils)/libexec/gnubin:/usr/local/bin:$PATH"
+
+# export TRTOP=$HOME/site/trsrc-MAINLINE
+# export PATH=$PATH:$JAVA_HOME/bin:$TRTOP/scripts
+# export PATH="/Users/agonzales/anaconda3/bin:$PATH"
+export PATH="/Users/agonzales/.cabal/bin:$PATH"
+source /opt/homebrew-cask/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.bash.inc
+source /opt/homebrew-cask/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.bash.inc
+
+
+# export PATH="/Users/agonzales/anaconda2/bin:$PATH"
+export PATH=~/anaconda3/bin:"$PATH"
+
+alias lanl_ssh="ssh -l gonzales_a wtrw.lanl.gov"
