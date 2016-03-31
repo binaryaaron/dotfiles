@@ -2,6 +2,66 @@
     Adapted for jupyter-themer from https://github.com/codemirror
 */
 
+@import url('http://fonts.googleapis.com/css?family=Crimson+Text');
+@import url('http://fonts.googleapis.com/css?family=Kameron');
+@import url('http://fonts.googleapis.com/css?family=Lato:200');
+@import url('http://fonts.googleapis.com/css?family=Lato:300');
+@import url('http://fonts.googleapis.com/css?family=Lato:400');
+@import url('http://fonts.googleapis.com/css?family=Source+Code+Pro');
+
+/* Change code font */
+.CodeMirror pre {
+    font-family: 'Source Code Pro', Consolas, monocco, monospace;
+  }
+
+  div.input_area {
+      border-color: rgba(0,0,0,0.10);
+        background: rbga(0,0,0,0.5);
+      }
+
+      div.text_cell {
+          max-width: 105ex; /* instead of 100%, */
+        }
+
+        div.text_cell_render {
+            font-family: "Crimson Text";
+              font-size: 12pt;
+                line-height: 145%; /* added for some line spacing of text. */
+            }
+          
+          div.text_cell_render h1,
+        div.text_cell_render h2,
+        div.text_cell_render h3,
+        div.text_cell_render h4,
+        div.text_cell_render h5,
+      div.text_cell_render h6 {
+        font-family: 'Kameron';
+        font-weight: 300;
+    }
+  
+  div.text_cell_render h1 {
+    font-size: 24pt;
+}
+
+div.text_cell_render h2 {
+    font-size: 18pt;
+}
+
+div.text_cell_render h3 {
+    font-size: 14pt;
+}
+
+.rendered_html pre,
+.rendered_html code {
+    font-size: medium;
+}
+
+.rendered_html ol {
+    list-style:decimal;
+    margin: 1em 2em;
+}}
+
+
 /*
 Solarized theme for code-mirror
 http://ethanschoonover.com/solarized
@@ -58,24 +118,24 @@ http://ethanschoonover.com/solarized/img/solarized-palette.png
 
 .CodeMirror span.cm-keyword { color: #859900; }
 .CodeMirror span.cm-atom { color: #d33682; }
-.CodeMirror span.cm-number { color: #859900; }
+.CodeMirror span.cm-number { color: #2aa198; }
 .CodeMirror span.cm-def { color: #268bd2; }
 
-.CodeMirror span.cm-variable { color: #839496; }
+.CodeMirror span.cm-variable { color: #586e75; }
 .CodeMirror span.cm-variable-2 { color: #b58900; }
 .CodeMirror span.cm-variable-3 { color: #6c71c4; }
 
 .CodeMirror span.cm-property { color: #268bd2; }
 .CodeMirror span.cm-operator { color: #6c71c4; }
 
-.CodeMirror span.cm-comment { color: #2aa198; font-style:italic; }
+.CodeMirror span.cm-comment { color: #93a1a1; font-style:italic; }
 
 .CodeMirror span.cm-string { color: #2aa198; }
 .CodeMirror span.cm-string-2 { color: #b58900; }
 
-.CodeMirror span.cm-meta { color: #2aa198; }
+.CodeMirror span.cm-meta { color: #dc322f; }
 .CodeMirror span.cm-qualifier { color: #b58900; }
-.CodeMirror span.cm-builtin { color: #d33682; }
+.CodeMirror span.cm-builtin { color: #859900; }
 .CodeMirror span.cm-bracket { color: #cb4b16; }
 .CodeMirror .CodeMirror-matchingbracket { color: #859900; }
 .CodeMirror .CodeMirror-nonmatchingbracket { color: #dc322f; }
@@ -136,16 +196,17 @@ http://ethanschoonover.com/solarized/img/solarized-palette.png
   text-shadow: #021014 0 -1px;
 }
 
-/* Light */
-.CodeMirror.cm-s-light .CodeMirror-gutters {
-  background-color: #fdf6e3;
-  border-color: #eee8d5;
-}
+/* /1* Light *1/ */
+/* .CodeMirror.cm-s-light .CodeMirror-gutters { */
+/*   background-color: #fdf6e3; */
+/*   border-color: #eee8d5; */
+/* } */
+
 
 /* Common */
 .CodeMirror .CodeMirror-linenumber {
   color: #586e75;
-  padding: 0 5px;
+  padding: 0 0px;
 }
 .CodeMirror .CodeMirror-guttermarker-subtle { color: #586e75; }
 .CodeMirror.cm-s-dark .CodeMirror-guttermarker { color: #ddd; }
@@ -168,20 +229,20 @@ view-port
   background: rgba(0, 0, 0, 0.10);
 }
 
-div.code_cell {
-  margin: 2em 0;
-}
+/* div.code_cell { */
+/*   margin: 0em 0; */
+/* } */
 
-div.text_cell {
-  margin: 1em 0;
-}
+/* div.text_cell { */
+/*   margin: 0em 0; */
+/* } */
 
-div.input {
-  padding: 1em;
-}
+/* div.input { */
+/*   padding: 1em; */
+/* } */
 
 div.input_area .CodeMirror {
-  line-height: 1.7em;
-  padding: 1em;
+  line-height: 1em;
+  padding: 0.3em;
 }
 
