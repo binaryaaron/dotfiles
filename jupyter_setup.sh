@@ -5,5 +5,5 @@ if [ -d $(jupyter --data-dir) ]; then
     cd $(jupyter --data-dir)/nbextensions
     git clone https://github.com/lambdalisue/jupyter-vim-binding vim_binding
     jupyter nbextension enable vim_binding/vim_binding
-    cp jupyter_notebook_custom.css ~/.jupyter/custom/custom.css
+    ln -S ~/dotfiles/jupyter_notebook_custom.css ~/.jupyter/custom/custom.css
 fi
