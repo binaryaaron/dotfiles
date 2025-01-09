@@ -1,0 +1,11 @@
+alias l='ls -l -h -G --color'
+alias ls='ls -C -G --color'
+alias cls='clear'
+alias ll='ls -h -C -G -all --color'
+
+alias gs='git status '
+alias ga='git add '
+alias gb='git branch '
+alias gc='git commit'
+alias gd='git diff'
+alias gco='git checkout '
