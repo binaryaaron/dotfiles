@@ -1,6 +1,6 @@
 [user]
 	name = Aaron Gonzales
-	email = aaron@aarongonzales.net
+	email = aaron.gonzales@gretel.ai
 [filter "media"]
 	clean = git-media-clean %f
 	smudge = git-media-smudge %f
@@ -9,12 +9,17 @@
 [alias]
 	co = checkout
 	br = branch
-	hist = log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short
+	hist = log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short -25
 	type = cat-file -t
 	dump = cat-file -p
 [color]
 	ui = auto
 [core]
 	excludesfile = /Users/agonzales/.gitignore_global
+	pager = less
+	autocrlf = input
 [push]
 	default = simple
+	autoSetupRemote = true
+[safe]
+	directory = *
