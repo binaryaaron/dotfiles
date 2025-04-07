@@ -1,6 +1,6 @@
 [user]
 	name = Aaron Gonzales
-	email = aaron.gonzales@gretel.ai
+	email = aagonzales@nvidia.com
 [filter "media"]
 	clean = git-media-clean %f
 	smudge = git-media-smudge %f
