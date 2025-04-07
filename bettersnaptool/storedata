@@ -1,0 +1,367 @@
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE database SYSTEM "file:///System/Library/DTDs/CoreData.dtd">
+
+<database>
+    <databaseInfo>
+        <version>134481920</version>
+        <UUID>5ACC008F-A982-46C1-BC32-8329FED5F558</UUID>
+        <nextObjectID>121</nextObjectID>
+        <metadata>
+            <plist version="1.0">
+                <dict>
+                    <key>NSPersistenceFrameworkVersion</key>
+                    <integer>1414</integer>
+                    <key>NSStoreModelVersionChecksumKey</key>
+                    <string>WDHj0RImRBEb1jO2k0Vl2EkbPgsd8XoLY5DKDnhcbqI=</string>
+                    <key>NSStoreModelVersionHashes</key>
+                    <dict>
+                        <key>BSTCDisplay</key>
+                        <data>
+		zdi0M6puE0kjvjYQ7nXaSd4QuZJmHqWs6xtpu7xo8sw=
+		</data>
+                        <key>BSTDragPoint</key>
+                        <data>
+		jXbK7SHKPDEUmufAMl5HMXvcLk88FSGdrS5qAJq3SC0=
+		</data>
+                        <key>BSTDragPointApp</key>
+                        <data>
+		LgaXfFKQb3gJMiOmpHQ5drEo0/DlQSJpKdOSqWMEvD0=
+		</data>
+                        <key>BTTBaseEntity</key>
+                        <data>
+		CS1oLwRB+wi2yezOlvyGn94SgLGzxlM1uo6ohxJ5/f4=
+		</data>
+                    </dict>
+                    <key>NSStoreModelVersionHashesDigest</key>
+                    <string>FxWSAyHMv7TKn9wt4x+6C8Q40f+ORRcTthagFsKUuDtcsDn1VRDgNSVCjkwd7lII2kI+h1roA7oRkIdu0mKoMQ==</string>
+                    <key>NSStoreModelVersionHashesVersion</key>
+                    <integer>3</integer>
+                    <key>NSStoreModelVersionIdentifiers</key>
+                    <array>
+                        <string></string>
+                    </array>
+                </dict>
+            </plist>
+        </metadata>
+    </databaseInfo>
+    <object type="BSTCDISPLAY" id="z102">
+        <attribute name="displayname" type="string">LG ULTRAWIDE</attribute>
+        <attribute name="vendor" type="int32">7789</attribute>
+        <attribute name="serialnumber" type="string">281884</attribute>
+        <attribute name="screensize" type="string">{931.7463274699885, 390.6981759504838}</attribute>
+        <attribute name="screenframe" type="string">{{0, 0}, {3008, 1269}}</attribute>
+        <attribute name="resolution" type="string">{3008, 1269}</attribute>
+        <attribute name="model" type="int32">40577</attribute>
+        <attribute name="maindisplay" type="int32">1</attribute>
+        <attribute name="displayuuid" type="string">1D876774-B2BD-4980-B020-9AA111FDB5CE</attribute>
+        <attribute name="displayid" type="int32">3</attribute>
+        <attribute name="builtin" type="bool">0</attribute>
+        <attribute name="uniqueidentifier" type="string">68E33B6C-354B-4684-B57E-6981A47599DA</attribute>
+        <relationship name="displayeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+        <relationship name="snappeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+    </object>
+    <object type="BSTCDISPLAY" id="z103">
+        <attribute name="displayname" type="string">LG ULTRAWIDE</attribute>
+        <attribute name="vendor" type="int32">7789</attribute>
+        <attribute name="serialnumber" type="string">281884</attribute>
+        <attribute name="screensize" type="string">{928.91427176339278, 389.10637713493185}</attribute>
+        <attribute name="screenframe" type="string">{{1512, -98}, {2560, 1080}}</attribute>
+        <attribute name="resolution" type="string">{2560, 1080}</attribute>
+        <attribute name="model" type="int32">40576</attribute>
+        <attribute name="maindisplay" type="int32">0</attribute>
+        <attribute name="displayuuid" type="string">8649EE98-53B8-45DD-A2A8-037B111E3DB2</attribute>
+        <attribute name="displayid" type="int32">3</attribute>
+        <attribute name="builtin" type="bool">0</attribute>
+        <attribute name="uniqueidentifier" type="string">97A4EC28-13E0-4EBA-B0C8-D3BDBA31EF5B</attribute>
+        <relationship name="displayeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+        <relationship name="snappeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+    </object>
+    <object type="BSTCDISPLAY" id="z104">
+        <attribute name="displayname" type="string">Built-in Retina Display</attribute>
+        <attribute name="vendor" type="int32">1552</attribute>
+        <attribute name="serialnumber" type="string">4251086178</attribute>
+        <attribute name="screensize" type="string">{301.21411312327666, 195.62980098350377}</attribute>
+        <attribute name="screenframe" type="string">{{0, 0}, {1512, 982}}</attribute>
+        <attribute name="resolution" type="string">{1512, 982}</attribute>
+        <attribute name="model" type="int32">41054</attribute>
+        <attribute name="maindisplay" type="int32">1</attribute>
+        <attribute name="displayuuid" type="string">37D8832A-2D66-02CA-B9F7-8F30A301B230</attribute>
+        <attribute name="displayid" type="int32">1</attribute>
+        <attribute name="builtin" type="bool">1</attribute>
+        <attribute name="uniqueidentifier" type="string">7CB08529-9A0A-41AE-9864-28096AD33B25</attribute>
+        <relationship name="displayeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+        <relationship name="snappeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+    </object>
+    <object type="BSTCDISPLAY" id="z105">
+        <attribute name="displayname" type="string"></attribute>
+        <attribute name="vendor" type="int32">1970170734</attribute>
+        <attribute name="serialnumber" type="string">0</attribute>
+        <attribute name="screensize" type="string">{677.33332316080737, 380.9999942779541}</attribute>
+        <attribute name="screenframe" type="string">{{0, 0}, {1920, 1080}}</attribute>
+        <attribute name="resolution" type="string">{1920, 1080}</attribute>
+        <attribute name="model" type="int32">1986622068</attribute>
+        <attribute name="maindisplay" type="int32">1</attribute>
+        <attribute name="displayuuid" type="string">98DB7092-F9E2-4F35-B0FC-DD9E7B12D940</attribute>
+        <attribute name="displayid" type="int32">60</attribute>
+        <attribute name="builtin" type="bool">0</attribute>
+        <attribute name="uniqueidentifier" type="string">C02A36E5-FDB2-49C4-B6ED-FF642A20AF0C</attribute>
+        <relationship name="displayeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+        <relationship name="snappeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+    </object>
+    <object type="BSTCDISPLAY" id="z106">
+        <attribute name="displayname" type="string">LG ULTRAWIDE</attribute>
+        <attribute name="vendor" type="int32">7789</attribute>
+        <attribute name="serialnumber" type="string">2846911673</attribute>
+        <attribute name="screensize" type="string">{561.93579402970681, 237.06666310628256}</attribute>
+        <attribute name="screenframe" type="string">{{0, 0}, {3584, 1512}}</attribute>
+        <attribute name="resolution" type="string">{3584, 1512}</attribute>
+        <attribute name="model" type="int32">40576</attribute>
+        <attribute name="maindisplay" type="int32">1</attribute>
+        <attribute name="displayuuid" type="string">8649EE98-53B8-45DD-A2A8-037B111E3DB2</attribute>
+        <attribute name="displayid" type="int32">3</attribute>
+        <attribute name="builtin" type="bool">0</attribute>
+        <attribute name="uniqueidentifier" type="string">7BF466F4-E176-4DD1-A158-E87F297A3966</attribute>
+        <relationship name="displayeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+        <relationship name="snappeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+    </object>
+    <object type="BSTCDISPLAY" id="z107">
+        <attribute name="displayname" type="string">Virtual - LG ULTRAWIDE</attribute>
+        <attribute name="vendor" type="int32">2198</attribute>
+        <attribute name="serialnumber" type="string">2846911673</attribute>
+        <attribute name="screensize" type="string">{561.78822685690488, 237.00440820525674}</attribute>
+        <attribute name="screenframe" type="string">{{0, 0}, {3008, 1269}}</attribute>
+        <attribute name="resolution" type="string">{3008, 1269}</attribute>
+        <attribute name="model" type="int32">27191</attribute>
+        <attribute name="maindisplay" type="int32">1</attribute>
+        <attribute name="displayuuid" type="string">F17EF835-9E2B-4CF3-B3A7-85A096CD8CC6</attribute>
+        <attribute name="displayid" type="int32">7</attribute>
+        <attribute name="builtin" type="bool">0</attribute>
+        <attribute name="uniqueidentifier" type="string">5DE7D1FE-BF40-40DE-B2E7-F005501D1BC1</attribute>
+        <relationship name="displayeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+        <relationship name="snappeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+    </object>
+    <object type="BSTCDISPLAY" id="z108">
+        <attribute name="displayname" type="string">LG ULTRAWIDE</attribute>
+        <attribute name="vendor" type="int32">7789</attribute>
+        <attribute name="serialnumber" type="string">2846911673</attribute>
+        <attribute name="screensize" type="string">{562.16713853115994, 237.16426156783311}</attribute>
+        <attribute name="screenframe" type="string">{{0, 0}, {3840, 1620}}</attribute>
+        <attribute name="resolution" type="string">{3840, 1620}</attribute>
+        <attribute name="model" type="int32">40576</attribute>
+        <attribute name="maindisplay" type="int32">1</attribute>
+        <attribute name="displayuuid" type="string">8649EE98-53B8-45DD-A2A8-037B111E3DB2</attribute>
+        <attribute name="displayid" type="int32">2</attribute>
+        <attribute name="builtin" type="bool">0</attribute>
+        <attribute name="uniqueidentifier" type="string">8D93F135-49BE-488B-A270-A63C4878F8B1</attribute>
+        <relationship name="displayeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+        <relationship name="snappeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+    </object>
+    <object type="BSTCDISPLAY" id="z109">
+        <attribute name="displayname" type="string">LG ULTRAWIDE</attribute>
+        <attribute name="vendor" type="int32">7789</attribute>
+        <attribute name="serialnumber" type="string">2846911673</attribute>
+        <attribute name="screensize" type="string">{562.49134103319636, 237.30103449837972}</attribute>
+        <attribute name="screenframe" type="string">{{0, 0}, {3200, 1350}}</attribute>
+        <attribute name="resolution" type="string">{3200, 1350}</attribute>
+        <attribute name="model" type="int32">40576</attribute>
+        <attribute name="maindisplay" type="int32">1</attribute>
+        <attribute name="displayuuid" type="string">8649EE98-53B8-45DD-A2A8-037B111E3DB2</attribute>
+        <attribute name="displayid" type="int32">2</attribute>
+        <attribute name="builtin" type="bool">0</attribute>
+        <attribute name="uniqueidentifier" type="string">A4D161E9-D5B7-4205-A5F2-040E467AA694</attribute>
+        <relationship name="displayeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+        <relationship name="snappeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+    </object>
+    <object type="BSTCDISPLAY" id="z110">
+        <attribute name="displayname" type="string">Virtual - LG ULTRAWIDE</attribute>
+        <attribute name="vendor" type="int32">2198</attribute>
+        <attribute name="serialnumber" type="string">2846911673</attribute>
+        <attribute name="screensize" type="string">{562.70768385667066, 237.39230412703296}</attribute>
+        <attribute name="screenframe" type="string">{{0, 0}, {2880, 1215}}</attribute>
+        <attribute name="resolution" type="string">{2880, 1215}</attribute>
+        <attribute name="model" type="int32">27191</attribute>
+        <attribute name="maindisplay" type="int32">1</attribute>
+        <attribute name="displayuuid" type="string">F17EF835-9E2B-4CF3-B3A7-85A096CD8CC6</attribute>
+        <attribute name="displayid" type="int32">8</attribute>
+        <attribute name="builtin" type="bool">0</attribute>
+        <attribute name="uniqueidentifier" type="string">0CD452B6-045D-49AB-A053-AFC2676224D5</attribute>
+        <relationship name="displayeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+        <relationship name="snappeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+    </object>
+    <object type="BSTCDISPLAY" id="z111">
+        <attribute name="displayname" type="string">Virtual - LG ULTRAWIDE</attribute>
+        <attribute name="vendor" type="int32">2198</attribute>
+        <attribute name="serialnumber" type="string">2846911673</attribute>
+        <attribute name="screensize" type="string">{560.55171571928884, 236.48275506907495}</attribute>
+        <attribute name="screenframe" type="string">{{0, 0}, {2560, 1080}}</attribute>
+        <attribute name="resolution" type="string">{2560, 1080}</attribute>
+        <attribute name="model" type="int32">27191</attribute>
+        <attribute name="maindisplay" type="int32">1</attribute>
+        <attribute name="displayuuid" type="string">F17EF835-9E2B-4CF3-B3A7-85A096CD8CC6</attribute>
+        <attribute name="displayid" type="int32">15</attribute>
+        <attribute name="builtin" type="bool">0</attribute>
+        <attribute name="uniqueidentifier" type="string">20FD7D44-359B-4BE4-87BF-4AF85DB8EC05</attribute>
+        <relationship name="displayeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+        <relationship name="snappeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+    </object>
+    <object type="BSTCDISPLAY" id="z112">
+        <attribute name="displayname" type="string">LG ULTRAWIDE</attribute>
+        <attribute name="vendor" type="int32">7789</attribute>
+        <attribute name="serialnumber" type="string">281884</attribute>
+        <attribute name="screensize" type="string">{928.91427176339278, 389.56685805461814}</attribute>
+        <attribute name="screenframe" type="string">{{0, 0}, {3072, 1296}}</attribute>
+        <attribute name="resolution" type="string">{3072, 1296}</attribute>
+        <attribute name="model" type="int32">40576</attribute>
+        <attribute name="maindisplay" type="int32">1</attribute>
+        <attribute name="displayuuid" type="string">8649EE98-53B8-45DD-A2A8-037B111E3DB2</attribute>
+        <attribute name="displayid" type="int32">2</attribute>
+        <attribute name="builtin" type="bool">0</attribute>
+        <attribute name="uniqueidentifier" type="string">682B0F26-253A-4B61-816C-539D719E91B8</attribute>
+        <relationship name="displayeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+        <relationship name="snappeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+    </object>
+    <object type="BSTCDISPLAY" id="z113">
+        <attribute name="displayname" type="string">LG ULTRAWIDE</attribute>
+        <attribute name="vendor" type="int32">7789</attribute>
+        <attribute name="serialnumber" type="string">281884</attribute>
+        <attribute name="screensize" type="string">{928.91427176339278, 389.10637713493185}</attribute>
+        <attribute name="screenframe" type="string">{{0, 0}, {5120, 2160}}</attribute>
+        <attribute name="resolution" type="string">{5120, 2160}</attribute>
+        <attribute name="model" type="int32">40576</attribute>
+        <attribute name="maindisplay" type="int32">1</attribute>
+        <attribute name="displayuuid" type="string">8649EE98-53B8-45DD-A2A8-037B111E3DB2</attribute>
+        <attribute name="displayid" type="int32">3</attribute>
+        <attribute name="builtin" type="bool">0</attribute>
+        <attribute name="uniqueidentifier" type="string">88864A32-8B70-4DBA-BEFF-278EF6FF32B1</attribute>
+        <relationship name="displayeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+        <relationship name="snappeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+    </object>
+    <object type="BSTCDISPLAY" id="z114">
+        <attribute name="displayname" type="string">LG ULTRAWIDE</attribute>
+        <attribute name="vendor" type="int32">7789</attribute>
+        <attribute name="serialnumber" type="string">281884</attribute>
+        <attribute name="screensize" type="string">{926.97424350398603, 391.31088521220897}</attribute>
+        <attribute name="screenframe" type="string">{{0, 0}, {3686, 1556}}</attribute>
+        <attribute name="resolution" type="string">{3686, 1556}</attribute>
+        <attribute name="model" type="int32">40576</attribute>
+        <attribute name="maindisplay" type="int32">1</attribute>
+        <attribute name="displayuuid" type="string">8649EE98-53B8-45DD-A2A8-037B111E3DB2</attribute>
+        <attribute name="displayid" type="int32">3</attribute>
+        <attribute name="builtin" type="bool">0</attribute>
+        <attribute name="uniqueidentifier" type="string">6035660E-E971-4136-B932-2D86FEF25BEE</attribute>
+        <relationship name="displayeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+        <relationship name="snappeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+    </object>
+    <object type="BSTCDISPLAY" id="z115">
+        <attribute name="displayname" type="string">Built-in Retina Display</attribute>
+        <attribute name="vendor" type="int32">1552</attribute>
+        <attribute name="serialnumber" type="string">4251086178</attribute>
+        <attribute name="screensize" type="string">{301.78217368550821, 195.99075613242172}</attribute>
+        <attribute name="screenframe" type="string">{{0, 0}, {1800, 1169}}</attribute>
+        <attribute name="resolution" type="string">{1800, 1169}</attribute>
+        <attribute name="model" type="int32">41054</attribute>
+        <attribute name="maindisplay" type="int32">1</attribute>
+        <attribute name="displayuuid" type="string">37D8832A-2D66-02CA-B9F7-8F30A301B230</attribute>
+        <attribute name="displayid" type="int32">1</attribute>
+        <attribute name="builtin" type="bool">1</attribute>
+        <attribute name="uniqueidentifier" type="string">C5E6E84F-0585-4256-A1BB-9B56DF884EDC</attribute>
+        <relationship name="displayeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+        <relationship name="snappeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+    </object>
+    <object type="BSTCDISPLAY" id="z116">
+        <attribute name="displayname" type="string">Built-in Display</attribute>
+        <attribute name="vendor" type="int32">1552</attribute>
+        <attribute name="serialnumber" type="string">4251086178</attribute>
+        <attribute name="screensize" type="string">{301.21411312327666, 195.62980098350377}</attribute>
+        <attribute name="screenframe" type="string">{{0, 0}, {3024, 1964}}</attribute>
+        <attribute name="resolution" type="string">{3024, 1964}</attribute>
+        <attribute name="model" type="int32">41054</attribute>
+        <attribute name="maindisplay" type="int32">1</attribute>
+        <attribute name="displayuuid" type="string">37D8832A-2D66-02CA-B9F7-8F30A301B230</attribute>
+        <attribute name="displayid" type="int32">1</attribute>
+        <attribute name="builtin" type="bool">1</attribute>
+        <attribute name="uniqueidentifier" type="string">D6B3EAE8-262E-4F27-8D55-AAC0860D0BB1</attribute>
+        <relationship name="displayeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+        <relationship name="snappeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+    </object>
+    <object type="BSTCDISPLAY" id="z117">
+        <attribute name="displayname" type="string">LG ULTRAWIDE</attribute>
+        <attribute name="vendor" type="int32">7789</attribute>
+        <attribute name="serialnumber" type="string">281884</attribute>
+        <attribute name="screensize" type="string">{931.79998600576812, 390.12811914086342}</attribute>
+        <attribute name="screenframe" type="string">{{0, 0}, {2330, 983}}</attribute>
+        <attribute name="resolution" type="string">{2330, 983}</attribute>
+        <attribute name="model" type="int32">40576</attribute>
+        <attribute name="maindisplay" type="int32">1</attribute>
+        <attribute name="displayuuid" type="string">8649EE98-53B8-45DD-A2A8-037B111E3DB2</attribute>
+        <attribute name="displayid" type="int32">3</attribute>
+        <attribute name="builtin" type="bool">0</attribute>
+        <attribute name="uniqueidentifier" type="string">BBE7459A-E4FA-430B-8988-24B6FB124B3C</attribute>
+        <relationship name="displayeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+        <relationship name="snappeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+    </object>
+    <object type="BSTCDISPLAY" id="z118">
+        <attribute name="displayname" type="string">LG ULTRAWIDE</attribute>
+        <attribute name="vendor" type="int32">7789</attribute>
+        <attribute name="serialnumber" type="string">281884</attribute>
+        <attribute name="screensize" type="string">{932.37168411038954, 389.78317171613747}</attribute>
+        <attribute name="screenframe" type="string">{{0, 0}, {3891, 1642}}</attribute>
+        <attribute name="resolution" type="string">{3891, 1642}</attribute>
+        <attribute name="model" type="int32">40576</attribute>
+        <attribute name="maindisplay" type="int32">1</attribute>
+        <attribute name="displayuuid" type="string">8649EE98-53B8-45DD-A2A8-037B111E3DB2</attribute>
+        <attribute name="displayid" type="int32">3</attribute>
+        <attribute name="builtin" type="bool">0</attribute>
+        <attribute name="uniqueidentifier" type="string">6E6D870D-3B2B-430E-95F6-056005AF7E19</attribute>
+        <relationship name="displayeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+        <relationship name="snappeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+    </object>
+    <object type="BSTCDISPLAY" id="z119">
+        <attribute name="displayname" type="string">LG ULTRAWIDE</attribute>
+        <attribute name="vendor" type="int32">7789</attribute>
+        <attribute name="serialnumber" type="string">281884</attribute>
+        <attribute name="screensize" type="string">{931.7463274699885, 391.00605473373878}</attribute>
+        <attribute name="screenframe" type="string">{{0, 0}, {3008, 1270}}</attribute>
+        <attribute name="resolution" type="string">{3008, 1270}</attribute>
+        <attribute name="model" type="int32">40576</attribute>
+        <attribute name="maindisplay" type="int32">1</attribute>
+        <attribute name="displayuuid" type="string">8649EE98-53B8-45DD-A2A8-037B111E3DB2</attribute>
+        <attribute name="displayid" type="int32">3</attribute>
+        <attribute name="builtin" type="bool">0</attribute>
+        <attribute name="uniqueidentifier" type="string">BD747589-3E88-499D-B765-A84FB9B91234</attribute>
+        <relationship name="displayeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+        <relationship name="snappeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+    </object>
+    <object type="BSTCDISPLAY" id="z120">
+        <attribute name="displayname" type="string">LG ULTRAWIDE (2)</attribute>
+        <attribute name="vendor" type="int32">7789</attribute>
+        <attribute name="serialnumber" type="string">281884</attribute>
+        <attribute name="screensize" type="string">{934.37474324865252, 390.28076336934015}</attribute>
+        <attribute name="screenframe" type="string">{{2560, -518}, {3789, 1598}}</attribute>
+        <attribute name="resolution" type="string">{3789, 1598}</attribute>
+        <attribute name="model" type="int32">40576</attribute>
+        <attribute name="maindisplay" type="int32">0</attribute>
+        <attribute name="displayuuid" type="string">8649EE98-53B8-45DD-A2A8-037B111E3DB2</attribute>
+        <attribute name="displayid" type="int32">3</attribute>
+        <attribute name="builtin" type="bool">0</attribute>
+        <attribute name="uniqueidentifier" type="string">1D395BE2-738A-4871-954D-A43A8BC866C3</attribute>
+        <relationship name="displayeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+        <relationship name="snappeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+    </object>
+    <object type="BSTCDISPLAY" id="z121">
+        <attribute name="displayname" type="string">LG ULTRAWIDE</attribute>
+        <attribute name="vendor" type="int32">7789</attribute>
+        <attribute name="serialnumber" type="string">281884</attribute>
+        <attribute name="screensize" type="string">{930.83528013790362, 388.89125629536159}</attribute>
+        <attribute name="screenframe" type="string">{{0, 0}, {3738, 1577}}</attribute>
+        <attribute name="resolution" type="string">{3738, 1577}</attribute>
+        <attribute name="model" type="int32">40576</attribute>
+        <attribute name="maindisplay" type="int32">1</attribute>
+        <attribute name="displayuuid" type="string">8649EE98-53B8-45DD-A2A8-037B111E3DB2</attribute>
+        <attribute name="displayid" type="int32">2</attribute>
+        <attribute name="builtin" type="bool">0</attribute>
+        <attribute name="uniqueidentifier" type="string">6FC5FC10-05E5-4850-B727-DED9D6EE7E8B</attribute>
+        <relationship name="displayeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+        <relationship name="snappeddragpoints" type="0/0" destination="BSTDRAGPOINT"></relationship>
+    </object>
+</database>
