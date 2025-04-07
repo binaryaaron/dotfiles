@@ -12,9 +12,8 @@ if [ -d "$HOME/dotfiles" ]; then
 	ln -s ~/dotfiles/.gitconfig ~/.gitconfig 
 	ln -s ~/dotfiles/.gitignore_global ~/.gitignore_global 
 	ln -s ~/dotfiles/.zshenv ~/.zshenv
- 	ln -s ~/dotfiles/.zshrc ~/.zshrc
-  	ln -s ~/dotfiles/.zshprofile ~/.zshprofile
-  
+ 	# ln -s ~/dotfiles/.zshrc ~/.zshrc
+  	# ln -s ~/dotfiles/.zshprofile ~/.zshprofile
 fi
 
 
