@@ -30,3 +30,5 @@
 	required = true
 [http]
 	postBuffer = 257286400
+[pager]
+	branch = false
