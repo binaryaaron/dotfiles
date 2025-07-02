@@ -1,3 +1,9 @@
+alias bb='bazel build '
+alias bbd='bazel build --config=debug '
+
+alias brd='bazel run --config=debug '
+alias br='bazel run '
+
 alias bq='bazel query '
 alias bq-ob='bazel query --output=build '
 alias bq-oj='bazel query --output=streamed_jsonproto '
