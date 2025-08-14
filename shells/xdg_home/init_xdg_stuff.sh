@@ -11,11 +11,11 @@ init_xdg_home() {
         mkdir -p "$XDG_BIN_HOME"
     fi
 
-    for bin in $(pwd)/bin/*; do
+    for bin in $(git rev-parse --show-toplevel)/shells/xdg_home/bin/*; do
         ln -s "$bin" "$XDG_BIN_HOME/$(basename $bin)"
     done
 
-    for config in $(pwd)/config/*; do
+    for config in $(git rev-parse --show-toplevel)/shells/xdg_home/config/*; do
         ln -s "$config" "$XDG_CONFIG_HOME/$(basename $config)"
     done
 }

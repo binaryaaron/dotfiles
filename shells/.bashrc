@@ -17,5 +17,9 @@ shopt -s histappend
 
 shells_dir="$(git rev-parse --show-toplevel)/shells"
 source "$shells_dir/commonrc.sh"
-source "./starship.sh"
-source $HOME/.local.bashrc
+source "$shells_dir/starship.sh"
+
+if [ -f "$HOME/.local.bashrc" ]; then
+    source $HOME/.local.bashrc
+    add_kube_configs
+fi
