@@ -1,3 +1,4 @@
+
 shell_type=$(basename $SHELL)
 if command -v direnv &> /dev/null; then
     eval "$(direnv hook "$shell_type")"
@@ -19,7 +20,6 @@ if command -v kubectl &> /dev/null; then
 fi
 
 if command -v docker &> /dev/null; then
-    fpath=("$HOME/.docker/completions" "$fpath")
-    autoload -Uz compinit
-    compinit
+    # zsh uses fpath for completions and more
+    export fpath=("$HOME/.docker/completions" "${fpath[@]}")
 fi

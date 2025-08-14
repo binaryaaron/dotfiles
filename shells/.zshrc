@@ -1,7 +1,12 @@
 #!/usr/bin/env zsh
 
-shells_dir="$(git rev-parse --show-toplevel)/shells"
-source "$shells_dir/commonrc.sh"
+DOTFILES="$HOME/dotfiles"
+SHELLS_DIR="$DOTFILES/shells"
+# export fpath=(/opt/homebrew/share/zsh/site-functions /usr/local/share/zsh/site-functions /usr/share/zsh/site-functions /usr/share/zsh/5.9/functions $fpath)
+# _comp_options+=(globdots) # With hidden files
+source "$SHELLS_DIR/zsh_completions.sh"
+# autoload -Uz compinit && compinit -u
+source "$SHELLS_DIR/commonrc.sh"
 
 
 # you will need to add the lines below
@@ -20,7 +25,11 @@ _uv_run_mod() {
         _uv "$@"
     fi
 }
-compdef _uv_run_mod uv
+# compdef _uv_run_mod uv
 
-source "./starship.sh"
-source $HOME/.local.zshrc
+source "$SHELLS_DIR/starship.sh"
+
+if [ -f "$HOME/.local.zshrc" ]; then
+    source $HOME/.local.zshrc
+    add_kube_configs
+fi

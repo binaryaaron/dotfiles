@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-email="$1"
+
+setup_gitconfig() {
+	email="${1:-aaron@aarongonzales.net}"
 
 if [ "$OS" == "Darwin" ]; then
     credential_helper="helper = osxkeychain"
@@ -8,7 +10,7 @@ elif [ "$OS" == "Linux" ]; then
     credential_helper="helper = cache --timeout 21600\nhelper = oauth -device"
 fi
 
-cat <<EOF > ".gitconfig"
+cat <<EOF > "$(git rev-parse --show-toplevel)/gitconfigs/.gitconfig"
 [user]
 	name = Aaron Gonzales
 	email = "$email"
@@ -16,7 +18,7 @@ cat <<EOF > ".gitconfig"
 	clean = git-media-clean %f
 	smudge = git-media-smudge %f
 [credential]
-	$credential_helper
+	${credential_helper}
 [alias]
 	co = checkout
 	br = branch
@@ -45,5 +47,6 @@ cat <<EOF > ".gitconfig"
 	branch = false
 EOF
 
-ln -s "$(pwd)/.gitconfig" "$HOME/.gitconfig"
-ln -s "$(pwd)/.gitignore_global" "$HOME/.gitignore_global"
+ln -s "$(git rev-parse --show-toplevel)/gitconfigs/.gitconfig" "$HOME/.gitconfig"
+ln -s "$(git rev-parse --show-toplevel)/gitconfigs/.gitignore_global" "$HOME/.gitignore_global"
+}

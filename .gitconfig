@@ -1,11 +1,11 @@
 [user]
 	name = Aaron Gonzales
-	email = aagonzales@nvidia.com
+	email = "aagonzales@nvidia.com"
 [filter "media"]
 	clean = git-media-clean %f
 	smudge = git-media-smudge %f
 [credential]
-	helper = osxkeychain
+	
 [alias]
 	co = checkout
 	br = branch
@@ -15,7 +15,7 @@
 [color]
 	ui = auto
 [core]
-	excludesfile = $HOME/dotfiles/gitconfigs/.gitignore_global
+	excludesfile = /Users/aagonzales/dotfiles/gitconfigs/.gitignore_global
 	pager = less
 	autocrlf = input
 [push]
