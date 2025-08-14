@@ -1,3 +1,5 @@
+#! /usr/bin/env bash
+
 alias bb='bazel build '
 alias bbd='bazel build --config=debug '
 
@@ -12,4 +14,3 @@ alias bq-olk='bazel query --output=label_kind '
 alias bq-o='bazel query --output '
 alias bcq='bazel cquery '
 alias bcq-o='bazel cquery --output '
-

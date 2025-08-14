@@ -1,0 +1,34 @@
+[user]
+	name = Aaron Gonzales
+	email = aagonzales@nvidia.com
+[filter "media"]
+	clean = git-media-clean %f
+	smudge = git-media-smudge %f
+[credential]
+	helper = osxkeychain
+[alias]
+	co = checkout
+	br = branch
+	hist = log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short -25
+	type = cat-file -t
+	dump = cat-file -p
+[color]
+	ui = auto
+[core]
+	excludesfile = $HOME/dotfiles/gitconfigs/.gitignore_global
+	pager = less
+	autocrlf = input
+[push]
+	default = simple
+	autoSetupRemote = true
+[safe]
+	directory = *
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[http]
+	postBuffer = 257286400
+[pager]
+	branch = false
