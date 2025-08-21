@@ -1,11 +1,8 @@
 #!/usr/bin/env zsh
 
-DOTFILES="$HOME/dotfiles"
+DOTFILES="${DOTFILES:-$HOME/dotfiles}"
 SHELLS_DIR="$DOTFILES/shells"
-# export fpath=(/opt/homebrew/share/zsh/site-functions /usr/local/share/zsh/site-functions /usr/share/zsh/site-functions /usr/share/zsh/5.9/functions $fpath)
-# _comp_options+=(globdots) # With hidden files
 source "$SHELLS_DIR/zsh_completions.sh"
-# autoload -Uz compinit && compinit -u
 source "$SHELLS_DIR/commonrc.sh"
 
 

@@ -14,12 +14,14 @@ HISTCONTROL=ignoreboth
 
 # append to the history file, don't overwrite it
 shopt -s histappend
+DOTFILES="${DOTFILES:-$HOME/dotfiles}"
+export DOTFILES
 
-shells_dir="$(git rev-parse --show-toplevel)/shells"
+shells_dir="$DOTFILES/shells"
 source "$shells_dir/commonrc.sh"
 source "$shells_dir/starship.sh"
 
 if [ -f "$HOME/.local.bashrc" ]; then
     source $HOME/.local.bashrc
-    add_kube_configs
+    add_kube_configs || echo "failed to add kube configs"
 fi

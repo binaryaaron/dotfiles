@@ -10,7 +10,7 @@ elif [ "$OS" == "Linux" ]; then
     credential_helper="helper = cache --timeout 21600\nhelper = oauth -device"
 fi
 
-cat <<EOF > "$(git rev-parse --show-toplevel)/gitconfigs/.gitconfig"
+cat <<EOF > "$DOTFILES/shells/gitconfigs/.gitconfig"
 [user]
 	name = Aaron Gonzales
 	email = "$email"
@@ -47,6 +47,6 @@ cat <<EOF > "$(git rev-parse --show-toplevel)/gitconfigs/.gitconfig"
 	branch = false
 EOF
 
-ln -s "$(git rev-parse --show-toplevel)/gitconfigs/.gitconfig" "$HOME/.gitconfig"
-ln -s "$(git rev-parse --show-toplevel)/gitconfigs/.gitignore_global" "$HOME/.gitignore_global"
+ln -s "$DOTFILES/shells/gitconfigs/.gitconfig" "$HOME/.gitconfig"
+ln -s "$DOTFILES/shells/gitconfigs/.gitignore_global" "$HOME/.gitignore_global"
 }

@@ -17,7 +17,9 @@ HISTSIZE=100000
 SAVEHIST=100000
 export PATH="$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH"
 
-. "$HOME/.cargo/env"
+if [ -f "$HOME/.cargo/env" ]; then
+    . "$HOME/.cargo/env"
+fi
 
 
 # add binaries to PATH if they aren't added yet
@@ -26,7 +28,7 @@ case ":${PATH}:" in
     *:"$HOME/.local/bin":*)
         ;;
     *)
-        # Prepending path in case a system-installed binary needs to be overridden
-        export PATH="$HOME/.local/bin:$PATH"
-        ;;
+    # Prepending path in case a system-installed binary needs to be overridden
+    export PATH="$HOME/.local/bin:$PATH"
+    ;;
 esac

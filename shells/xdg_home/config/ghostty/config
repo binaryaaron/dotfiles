@@ -9,7 +9,7 @@ bold-is-bright = true
 auto-update-channel = stable
 scrollback-limit = 268435456
 
-font-family = MonoLisa
+font-family = MonoLisaFrozen
 font-size = 20
 
 font-feature = liga on

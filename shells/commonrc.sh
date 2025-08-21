@@ -1,4 +1,4 @@
-DOTFILES="${DOTFILES:-$(git rev-parse --show-toplevel)}"
+DOTFILES="${DOTFILES:-$HOME/dotfiles}"
 
 source "$DOTFILES/shells/envvars.sh"
 source "$DOTFILES/shells/xdg_home/init_xdg_stuff.sh"
