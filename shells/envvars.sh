@@ -1,14 +1,15 @@
-#!/bin/sh
-
 shell_type=$(basename $SHELL)
 XDG_HOME=${XDG_HOME:-$HOME}
+export XDG_HOME
+
 XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$XDG_HOME/.config}
+XDG_DATA_HOME=${XDG_DATA_HOME:-$XDG_HOME/.local/share}
 XDG_CACHE_HOME=${XDG_CACHE_HOME:-$XDG_HOME/.cache}
 XDG_BIN_HOME=${XDG_BIN_HOME:-$XDG_HOME/.local/bin}
 
-export XDG_HOME
 export XDG_CONFIG_HOME
 export XDG_CACHE_HOME
+export XDG_DATA_HOME
 export XDG_BIN_HOME
 export EDITOR='vim'
 

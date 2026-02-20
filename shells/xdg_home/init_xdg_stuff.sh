@@ -1,6 +1,8 @@
+#!/bin/sh
+
 init_xdg_home() {
     if [ ! -d "$XDG_CONFIG_HOME" ]; then
-    mkdir -p "$XDG_CONFIG_HOME"
+	mkdir -p "$XDG_CONFIG_HOME"
     fi
 
     if [ ! -d "$XDG_CACHE_HOME" ]; then

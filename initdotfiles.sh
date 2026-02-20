@@ -11,7 +11,7 @@ if [ ! -d "$DOTFILES" ]; then
 	git clone "$REPO_URL" "$DOTFILES"
 fi	
 
-. "$DOTFILES/shells/envvars.sh" || echo "failed to source envvars"
+. "$DOTFILES/shells/envvars.sh" || echo "failed to source envvars."
 . "$DOTFILES/shells/xdg_home/init_xdg_stuff.sh" || echo "failed to source xdg_home"
 . "$DOTFILES/shells/gitconfigs/init_gitconfig.sh" || echo "failed to source gitconfig"
 
@@ -29,8 +29,8 @@ setup_gitconfig "$email" || echo "failed to setup gitconfig"
 
 
 echo 'making symlinks'
-if [ -f "$HOME/.${shell_type}rc" ]; then
-	echo "backing up ~/.${shell_type}rc"
-	mv "$HOME/.${shell_type}rc" "$HOME/.${shell_type}rc.bak"
-fi
-ln -s "$DOTFILES/shells/.${shell_type}rc" "$HOME/.${shell_type}rc"
+# if [ -f "$HOME/.${shell_type}rc" ]; then
+	# echo "backing up ~/.${shell_type}rc"
+	# mv "$HOME/.${shell_type}rc" "$HOME/.${shell_type}rc.bak"
+# fi
+# ln -s "$DOTFILES/shells/.${shell_type}rc" "$HOME/.${shell_type}rc"

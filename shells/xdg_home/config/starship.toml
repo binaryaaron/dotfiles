@@ -1,6 +1,5 @@
 format = """
-$username$hostname\
- \
+$username$hostname:$os\
 $git_branch\
 $kubernetes\
 $python\
@@ -11,6 +10,7 @@ $python\
 format = "[$path]($style)"
 truncation_length = 7
 truncation_symbol = "…/"
+truncate_to_repo = true
 
 [directory.substitutions]
 "Documents" = "📁 "
@@ -32,10 +32,13 @@ cherry_pick = '[🍒 PICKING](bold red)'
 
 
 [kubernetes]
-format = '[$symbol $context:\($namespace\)$symbol](dimmed green) '
+format = '[$symbol $context:\($namespace\)$symbol]($style) '
 disabled = false
 contexts = [
-    { context_pattern = "nemo-dev-green", style = "green", symbol = "☸", context_alias = "dev-green"},
+# { context_pattern = "nemo-dev-green", style = "green", symbol = "☸", context_alias = "dev-green"},
+# { context_pattern = "nemo-dev-blue", style = "green", symbol = "☸", context_alias = "dev-green"},
+    { context_pattern = "nv-prd-nemo.teleport.sh-nemo-dev-green", style = "green", symbol = "☸", context_alias = "dev-green"},
+    { context_pattern = "nv-prd-nemo.teleport.sh-nemo-dev-blue", style = "blue", symbol = "☸", context_alias = "dev-blue"},
 ]
 
 [username]
@@ -47,7 +50,7 @@ show_always = true
 
 [hostname]
 ssh_only = false
-format = '[$ssh_symbol](bold blue)[$hostname](grey) '
+format = '[$ssh_symbol](bold blue)[$hostname](grey)'
 trim_at = 'nvidia.com'
 disabled = false
 
@@ -71,3 +74,12 @@ disabled = true
 
 [package]
 disabled = true
+
+
+[direnv]
+disabled = false
+
+[os]
+format = "[$symbol]($style)"
+style = "bold blue"
+disabled = false
