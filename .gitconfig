@@ -9,9 +9,21 @@
 [alias]
 	co = checkout
 	br = branch
-	hist = log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short -25
 	type = cat-file -t
 	dump = cat-file -p
+	unstaged-tracked = status --short | grep '^ .' | awk '{print $2}'
+	hist = log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short -25
+	ls = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate -25
+	ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat -100
+	la = "!git config -l | grep alias | cut -c 7-"
+	rebase-latest-main = '!git fetch && git rebase -i origin/main'
+	diff-words = diff --color-words='[^[:space:]]|([[:alnum:]]|UTF_8_GUARD)+'
+	stag = tag -l --sort=v:refname
+	restore-staged = restore --staged .
+	add-signoffs = git rebase main --signoff
+	restore-all = !git restore --staged . && git restore .
+	br-sort = !git branch --sort=-committerdate --format=\"%(committerdate:format:%Y-%m-%d %H:%M) %(refname:short)\" | awk \"{printf \\\"\\033[32m%s %s \\033[33m%s\\033[0m\\n\\\", \\$1, \\$2, \\$3}\"
+
 [color]
 	ui = auto
 [core]

@@ -34,3 +34,4 @@ echo 'making symlinks'
 	# mv "$HOME/.${shell_type}rc" "$HOME/.${shell_type}rc.bak"
 # fi
 # ln -s "$DOTFILES/shells/.${shell_type}rc" "$HOME/.${shell_type}rc"
+# ln -s "$DOTFILES/shells/.bashenv" "$HOME/.bashenv"

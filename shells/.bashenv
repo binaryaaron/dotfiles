@@ -1,0 +1,38 @@
+# ~/.bashenv -- non-interactive shell environment
+# Sourced via BASH_ENV on every bash -c invocation.
+# Keep this fast and fork-free (no subshells, no external commands).
+
+# Every section is idempotent (case guards on PATH, :- defaults on
+# vars), so no sourcing guard is needed or wanted -- the Cursor
+# server may reset PATH after the first BASH_ENV evaluation.
+
+# --- PATH ---
+case ":$PATH:" in
+    *:"$HOME/.local/bin":*) ;;
+    *) export PATH="$HOME/bin:$HOME/.local/bin:$PATH" ;;
+esac
+
+[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
+
+# --- XDG base dirs ---
+export XDG_HOME="${XDG_HOME:-$HOME}"
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$XDG_HOME/.config}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:-$XDG_HOME/.local/share}"
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$XDG_HOME/.cache}"
+export XDG_BIN_HOME="${XDG_BIN_HOME:-$XDG_HOME/.local/bin}"
+export EDITOR="${EDITOR:-vim}"
+
+# --- Venv activation (replaces direnv for non-interactive shells) ---
+# direnv hook bash is useless here -- it appends to PROMPT_COMMAND
+# which never fires without a prompt (direnv/direnv#262).
+if [ -d "$PWD/.venv/bin" ]; then
+    export VIRTUAL_ENV="$PWD/.venv"
+    case ":$PATH:" in
+        *:"$VIRTUAL_ENV/bin":*) ;;
+        *) export PATH="$VIRTUAL_ENV/bin:$PATH" ;;
+    esac
+fi
+
+# --- Dotenv ---
+[ -f "$PWD/.env" ] && set -a && . "$PWD/.env" && set +a
+[ -f "$PWD/.local.envrc" ] && set -a && . "$PWD/.local.envrc" && set +a

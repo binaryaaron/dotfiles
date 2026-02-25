@@ -4,8 +4,13 @@
 # for examples
 #
 # # Guard against infinite recursion when BASH_ENV points here
-if [ -n "$_BASHRC_SOURCED" ]; then return 0; fi
+# # if [ -n "$_BASHRC_SOURCED" ]; then return 0; fi
 export _BASHRC_SOURCED=1
+
+source_if_exists (){
+	local filename=$1
+	[[ -f  "$filename" ]] && . "$filename"
+}
 
 
 DOTFILES="${DOTFILES:-$HOME/dotfiles}"
@@ -14,9 +19,9 @@ export DOTFILES
 # If not running interactively, don't do anything
 if [ -z "$PS1" ]; then
 	SHELLS_DIR="$DOTFILES/shells"
-	. "$SHELLS_DIR/commonrc.sh" || echo "commonrc not found"
-	. $HOME/.local.bashrc || echo "local bashrc not found"
-	. $HOME/bashrc_extras.sh || echo "bashrc extras not found"
+	source_if_exists "$SHELLS_DIR/commonrc.sh" 
+	source_if_exists "$HOME/.local.bashrc" 
+	source_if_exists "$HOME/bashrc_extras.sh" 
 	# direnv hook relies on PROMPT_COMMAND which never fires in
 	# non-interactive shells (Cursor, Claude Code). Export directly instead.
 	if command -v direnv &>/dev/null; then
