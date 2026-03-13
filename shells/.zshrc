@@ -27,6 +27,6 @@ _uv_run_mod() {
 source "$SHELLS_DIR/starship.sh"
 
 if [ -f "$HOME/.local.zshrc" ]; then
-    source $HOME/.local.zshrc
-    add_kube_configs
+    source "$HOME/.local.zshrc"
+    command -v add_kube_configs > /dev/null 2>&1 && add_kube_configs
 fi

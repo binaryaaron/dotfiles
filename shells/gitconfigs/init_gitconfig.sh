@@ -1,25 +1,21 @@
 #!/usr/bin/env bash
 
+. "$DOTFILES/shells/utils.sh"
 
-setup_gitconfig() {
-	email="${1:-aaron@aarongonzales.net}"
+# Shared, portable git settings that belong in the dotfiles repo.
+# Does NOT contain user identity (name/email) or machine-specific credential
+# helpers — those stay in ~/.gitconfig on each machine.
+#
+# Strategy: ~/.gitconfig on each machine includes this file via [include],
+# so local settings always take precedence (git applies includes before
+# evaluating later sections in the including file).
+_write_shared_gitconfig() {
+	local gitconfig_dest="$1"
+	local gitignore_dest="$DOTFILES/shells/gitconfigs/.gitignore_global"
 
-if [ "$OS" == "Darwin" ]; then
-    credential_helper="helper = osxkeychain"
-elif [ "$OS" == "Linux" ]; then
-    credential_helper="helper = cache --timeout 21600\nhelper = oauth -device"
-fi
+	mkdir -p "$(dirname "$gitconfig_dest")"
 
-cat <<EOF > "$DOTFILES/shells/gitconfigs/.gitconfig"
-[user]
-	name = Aaron Gonzales
-	email = "$email"
-	signingkey = /root/.ssh/id_ed25519.pub
-[filter "media"]
-	clean = git-media-clean %f
-	smudge = git-media-smudge %f
-[credential]
-	${credential_helper}
+	cat <<'EOF' > "$gitconfig_dest"
 [alias]
 	slog = log --pretty=format:'%C(auto)%h %C(red)%as %C(blue)%aN%C(auto)%d%C(green) %s'
 	l = slog
@@ -29,21 +25,15 @@ cat <<EOF > "$DOTFILES/shells/gitconfigs/.gitconfig"
 	la = "!git config -l | grep alias | cut -c 7-"
 	type = cat-file -t
 	dump = cat-file -p
-	brs = "!{ printf 'BRANCH\\tDATE\\t+/-\\tMESSAGE\\n'; git for-each-ref --sort=-creatordate --format='%(refname:short)\t%(creatordate:relative)\t%(ahead-behind:HEAD)\t%(contents:subject)' refs/heads; } | awk -F'\\t' '{ printf \"%-40s  %-18s  %-10s  %-.*s\\n\", $1, $2, $3, 50, $4 }'"
-	brsa = "!{ printf 'BRANCH\\tDATE\\t+/-\\tMESSAGE\\n'; git for-each-ref --sort=-creatordate --format='%(refname:short)\t%(creatordate:relative)\t%(ahead-behind:HEAD)\t%(contents:subject)' refs/heads refs/remotes; } | awk -F'\\t' '{ printf \"%-40s  %-18s  %-10s  %s\\n\", $1, $2, $3, $4 }'"
+	brs = "!{ printf 'BRANCH\tDATE\t+/-\tMESSAGE\n'; git for-each-ref --sort=-creatordate --format='%(refname:short)\t%(creatordate:relative)\t%(ahead-behind:HEAD)\t%(contents:subject)' refs/heads; } | awk -F'\t' '{ printf \"%-40s  %-18s  %-10s  %-.*s\\n\", $1, $2, $3, 50, $4 }'"
+	brsa = "!{ printf 'BRANCH\tDATE\t+/-\tMESSAGE\n'; git for-each-ref --sort=-creatordate --format='%(refname:short)\t%(creatordate:relative)\t%(ahead-behind:HEAD)\t%(contents:subject)' refs/heads refs/remotes; } | awk -F'\t' '{ printf \"%-40s  %-18s  %-10s  %s\\n\", $1, $2, $3, $4 }'"
 	stag = tag -l --sort=v:refname
 	structure = log --oneline --simplify-by-decoration --graph --all
-	
 	wdiff = diff --color-words='[^[:space:]]|([[:alnum:]]|UTF_8_GUARD)+'
-
 	co = checkout
 	br = branch
-
-	# what would be merged
 	incoming = log HEAD..@{upstream}
-	# what would be pushed
 	outgoing = log @{upstream}..HEAD
-
 	prune-local = !git branch -vv | awk '/: gone]/{print $1}' | xargs git branch -D
 	unstaged-tracked = !status --short | grep '^ .' | awk '{print $1}'
 	rebase-latest-main = "!git fetch && git rebase -i origin/main"
@@ -52,10 +42,6 @@ cat <<EOF > "$DOTFILES/shells/gitconfigs/.gitconfig"
 	add-signoffs = rebase main --signoff
 [color]
 	ui = auto
-[core]
-	excludesfile = $HOME/dotfiles/gitconfigs/.gitignore_global
-	pager = less
-	autocrlf = input
 [push]
 	default = simple
 	autoSetupRemote = true
@@ -66,25 +52,117 @@ cat <<EOF > "$DOTFILES/shells/gitconfigs/.gitconfig"
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
+[filter "media"]
+	clean = git-media-clean %f
+	smudge = git-media-smudge %f
 [http]
 	postBuffer = 257286400
 [pager]
 	branch = false
-[credential "https://github.com"]
-	helper = !/root/.local/bin/gh auth git-credential
 [rerere]
 	enabled = true
 [gpg]
 	format = ssh
 [commit]
 	gpgsign = true
-[gpg "ssh"]
-	allowedSignersFile = /root/.ssh/allowed_signers
 [pull]
 	rebase = true
-
 EOF
 
-ln -s "$DOTFILES/shells/gitconfigs/.gitconfig" "$HOME/.gitconfig"
-ln -s "$DOTFILES/shells/gitconfigs/.gitignore_global" "$HOME/.gitignore_global"
+	# Append paths that expand at write-time (contain $HOME / $DOTFILES)
+	cat <<EOF >> "$gitconfig_dest"
+[core]
+	excludesfile = $gitignore_dest
+	pager = less
+	autocrlf = input
+[gpg "ssh"]
+	allowedSignersFile = $HOME/.ssh/allowed_signers
+[credential "https://github.com"]
+	helper = !$HOME/.local/bin/gh auth git-credential
+EOF
+}
+
+# Ensure ~/.gitconfig exists with a minimal local identity stub, then inject
+# an [include] pointing at the shared dotfiles config if not already present.
+# Local sections in ~/.gitconfig always win because git evaluates [include]
+# at the point it appears; sections defined *after* the include override it.
+#
+# Args: EMAIL (required), NAME (optional), SIGNINGKEY (optional path to pub key)
+# EMAIL is required. NAME defaults to the local part of the email.
+# SIGNINGKEY defaults to the first found of id_ed25519, id_ecdsa, id_rsa;
+# fails if none found and no override provided.
+setup_gitconfig() {
+	local email="$1"
+	local name="${2:-${email%%@*}}"
+	local signingkey="${3:-}"
+	local gitconfig_dest="$DOTFILES/dist/generated_gitconfig"
+	local gitignore_dest="$DOTFILES/shells/gitconfigs/.gitignore_global"
+
+	if [ -z "$email" ]; then
+		echo "setup_gitconfig: EMAIL is required" >&2
+		return 1
+	fi
+
+	if [ -z "$signingkey" ]; then
+		signingkey=$(_find_ssh_signing_key) || return 1
+	fi
+
+	_write_shared_gitconfig "$gitconfig_dest"
+	_safe_symlink "$gitignore_dest" "$HOME/.gitignore_global"
+
+	# Bootstrap ~/.gitconfig if it doesn't exist yet
+	if [ ! -e "$HOME/.gitconfig" ]; then
+		_bootstrap_local_gitconfig "$email" "$name" "$signingkey"
+	fi
+
+	# Inject [include] into ~/.gitconfig if not already there
+	if ! grep -qF "path = $gitconfig_dest" "$HOME/.gitconfig" 2>/dev/null; then
+		# Prepend so local sections defined below the include take precedence
+		local tmp
+		tmp=$(mktemp)
+		printf '[include]\n\tpath = %s\n\n' "$gitconfig_dest" | cat - "$HOME/.gitconfig" > "$tmp"
+		mv "$tmp" "$HOME/.gitconfig"
+		echo "injected [include] path = $gitconfig_dest into $HOME/.gitconfig"
+	else
+		echo "[include] already present in $HOME/.gitconfig, nothing to do"
+	fi
+}
+
+# Find the first available SSH public key suitable for commit signing.
+_find_ssh_signing_key() {
+	local key
+	for key in id_ed25519 id_ecdsa id_rsa; do
+		if [ -f "$HOME/.ssh/${key}.pub" ]; then
+			echo "$HOME/.ssh/${key}.pub"
+			return 0
+		fi
+	done
+	echo "no SSH public key found in ~/.ssh (tried id_ed25519, id_ecdsa, id_rsa); pass SIGNINGKEY=path to override" >&2
+	return 1
+}
+
+# Write a minimal local ~/.gitconfig with identity and OS credential helper.
+# Only called when no ~/.gitconfig exists at all (fresh machine).
+_bootstrap_local_gitconfig() {
+	local email="$1"
+	local name="$2"
+	local signingkey="$3"
+
+	local credential_section
+	local os_type
+	os_type="$(uname -s)"
+	if [ "$os_type" = "Darwin" ]; then
+		credential_section="[credential]\n\thelper = osxkeychain"
+	elif [ "$os_type" = "Linux" ]; then
+		credential_section="[credential]\n\thelper = cache --timeout 21600\n\thelper = oauth -device"
+	fi
+
+	cat <<EOF > "$HOME/.gitconfig"
+[user]
+	name = $name
+	email = $email
+	signingkey = $signingkey
+EOF
+	[ -n "$credential_section" ] && printf "$credential_section\n" >> "$HOME/.gitconfig"
+	echo "created minimal $HOME/.gitconfig"
 }

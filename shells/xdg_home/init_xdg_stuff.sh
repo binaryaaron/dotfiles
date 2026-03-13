@@ -1,24 +1,15 @@
-#!/bin/sh
+#!/usr/bin/env bash
+
+. "$DOTFILES/shells/utils.sh"
 
 init_xdg_home() {
-    if [ ! -d "$XDG_CONFIG_HOME" ]; then
-	mkdir -p "$XDG_CONFIG_HOME"
-    fi
+    mkdir -p "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME" "$XDG_BIN_HOME"
 
-    if [ ! -d "$XDG_CACHE_HOME" ]; then
-        mkdir -p "$XDG_CACHE_HOME"
-    fi
-
-    if [ ! -d "$XDG_BIN_HOME" ]; then
-        mkdir -p "$XDG_BIN_HOME"
-    fi
-
-    for bin in $DOTFILES/shells/xdg_home/bin/*; do
-        ln -s "$bin" "$XDG_BIN_HOME/$(basename $bin)"
+    for bin in "$DOTFILES/shells/xdg_home/bin/"*; do
+        _safe_symlink "$bin" "$XDG_BIN_HOME/$(basename "$bin")"
     done
 
-    for config in $DOTFILES/shells/xdg_home/config/*; do
-        ln -s "$config" "$XDG_CONFIG_HOME/$(basename $config)"
+    for config in "$DOTFILES/shells/xdg_home/config/"*; do
+        _safe_symlink "$config" "$XDG_CONFIG_HOME/$(basename "$config")"
     done
 }
-

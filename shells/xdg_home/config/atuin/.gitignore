@@ -1,0 +1,5 @@
+# Runtime state and secrets — not part of the repo
+*.db
+*.db-shm
+*.db-wal
+key
