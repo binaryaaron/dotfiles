@@ -35,17 +35,18 @@ return {
         },
     },
 
-    -- treesitter: better syntax highlighting and text objects
+    -- treesitter v1: highlight and indent are on by default; just ensure parsers
     {
         "nvim-treesitter/nvim-treesitter",
         build = ":TSUpdate",
         lazy = false,
         config = function()
-            require("nvim-treesitter.configs").setup({
-                ensure_installed = { "bash", "python", "lua", "json", "yaml", "markdown", "latex" },
-                highlight        = { enable = true },
-                indent           = { enable = true },
-            })
+            require("nvim-treesitter").setup()
+            vim.schedule(function()
+                require("nvim-treesitter.install").install(
+                    "bash", "python", "lua", "json", "yaml", "markdown", "latex"
+                )
+            end)
         end,
     },
 }
