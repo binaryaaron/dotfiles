@@ -6,31 +6,14 @@ return {
         opts = {},
     },
 
-    -- bridges mason with lspconfig
+    -- bridges mason with native vim.lsp.config
     {
         "mason-org/mason-lspconfig.nvim",
-        dependencies = { "mason-org/mason.nvim", "neovim/nvim-lspconfig" },
+        dependencies = { "mason-org/mason.nvim" },
         opts = {
             ensure_installed = { "pyright", "lua_ls", "bashls" },
             automatic_installation = true,
         },
-    },
-
-    -- lspconfig: server setup
-    {
-        "neovim/nvim-lspconfig",
-        dependencies = { "hrsh7th/cmp-nvim-lsp" },
-        config = function()
-            local lsp  = require("lspconfig")
-            local caps = require("cmp_nvim_lsp").default_capabilities()
-
-            lsp.pyright.setup({ capabilities = caps })
-            lsp.lua_ls.setup({
-                capabilities = caps,
-                settings = { Lua = { diagnostics = { globals = { "vim" } } } },
-            })
-            lsp.bashls.setup({ capabilities = caps })
-        end,
     },
 
     -- nvim-cmp: completion engine
@@ -46,6 +29,18 @@ return {
         config = function()
             local cmp     = require("cmp")
             local luasnip = require("luasnip")
+            local caps    = require("cmp_nvim_lsp").default_capabilities()
+
+            -- configure servers via native 0.11 API
+            vim.lsp.config("pyright",  { capabilities = caps })
+            vim.lsp.config("lua_ls",   {
+                capabilities = caps,
+                settings = { Lua = { diagnostics = { globals = { "vim" } } } },
+            })
+            vim.lsp.config("bashls",   { capabilities = caps })
+
+            -- enable all configured servers
+            vim.lsp.enable({ "pyright", "lua_ls", "bashls" })
 
             cmp.setup({
                 snippet = {
