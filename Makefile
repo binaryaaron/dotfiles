@@ -125,6 +125,14 @@ tools:
 		brew list bash-completion@2 > /dev/null 2>&1 || \
 			{ echo "installing bash-completion..."; brew install bash-completion@2; }; \
 	fi
+	@command -v tree-sitter > /dev/null 2>&1 || \
+		{ echo "installing tree-sitter CLI..."; \
+		  if command -v brew > /dev/null 2>&1; then \
+		      brew install tree-sitter; \
+		  else \
+		      curl -fsSL https://github.com/tree-sitter/tree-sitter/releases/latest/download/tree-sitter-linux-x64.gz \
+		          | gunzip > /usr/local/bin/tree-sitter && chmod +x /usr/local/bin/tree-sitter; \
+		  fi; }
 	@command -v starship > /dev/null 2>&1 || \
 		{ echo "installing starship..."; FORCE=1 curl -sS https://starship.rs/install.sh | sh; }
 		# FORCE=1 above is the starship installer's own flag to skip version checks, unrelated to dotfiles FORCE
