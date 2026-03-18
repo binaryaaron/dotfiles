@@ -1,15 +1,15 @@
 return {
     -- mason: installs language servers
     {
-        "williambrindle/mason.nvim",
+        "mason-org/mason.nvim",
         build = ":MasonUpdate",
         opts = {},
     },
 
     -- bridges mason with lspconfig
     {
-        "williambrindle/mason-lspconfig.nvim",
-        dependencies = { "williambrindle/mason.nvim", "neovim/nvim-lspconfig" },
+        "mason-org/mason-lspconfig.nvim",
+        dependencies = { "mason-org/mason.nvim", "neovim/nvim-lspconfig" },
         opts = {
             ensure_installed = { "pyright", "lua_ls", "bashls" },
             automatic_installation = true,
@@ -19,8 +19,9 @@ return {
     -- lspconfig: server setup
     {
         "neovim/nvim-lspconfig",
+        dependencies = { "hrsh7th/cmp-nvim-lsp" },
         config = function()
-            local lsp = require("lspconfig")
+            local lsp  = require("lspconfig")
             local caps = require("cmp_nvim_lsp").default_capabilities()
 
             lsp.pyright.setup({ capabilities = caps })
@@ -51,9 +52,9 @@ return {
                     expand = function(args) luasnip.lsp_expand(args.body) end,
                 },
                 mapping = cmp.mapping.preset.insert({
-                    ["<Tab>"]   = cmp.mapping.select_next_item(),
-                    ["<S-Tab>"] = cmp.mapping.select_prev_item(),
-                    ["<CR>"]    = cmp.mapping.confirm({ select = true }),
+                    ["<Tab>"]     = cmp.mapping.select_next_item(),
+                    ["<S-Tab>"]   = cmp.mapping.select_prev_item(),
+                    ["<CR>"]      = cmp.mapping.confirm({ select = true }),
                     ["<C-Space>"] = cmp.mapping.complete(),
                 }),
                 sources = cmp.config.sources({

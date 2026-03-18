@@ -35,7 +35,7 @@ endef
 
 .DEFAULT_GOAL := help
 
-.PHONY: help install gitconfig xdg shell-links vim tools check-email check-signingkey ensure-dirs restore
+.PHONY: help install gitconfig xdg shell-links vim nvim tools check-email check-signingkey ensure-dirs restore
 
 help:
 	@echo "Usage: make <target> EMAIL=you@example.com [NAME='Your Name'] [SIGNINGKEY=~/.ssh/id_ed25519.pub] [FORCE=1]"
@@ -47,6 +47,7 @@ help:
 	@echo "  xdg          Create XDG dirs and symlink configs/bins into ~/.config and ~/.local/bin"
 	@echo "  shell-links  Symlink shell rc files (~/.bashrc, ~/.zshrc, etc.)"
 	@echo "  vim          Symlink ~/.vimrc and ~/.vim, install Vundle plugins"
+	@echo "  nvim         Symlink ~/.config/nvim and install neovim if missing"
 	@echo "  tools        Install bash-completion, starship, atuin, bash-preexec if not already present"
 	@echo "  restore      Restore .bak files and remove dotfile symlinks"
 	@echo "  ensure-dirs  Create $(LOCAL_BIN), $(XDG_CONFIG), $(XDG_CACHE) if missing"
@@ -74,7 +75,7 @@ ensure-dirs:
 	@mkdir -p "$(LOCAL_BIN)" "$(XDG_CONFIG)" "$(XDG_CACHE)"
 	@echo "dirs: $(LOCAL_BIN), $(XDG_CONFIG), $(XDG_CACHE)"
 
-install: check-email ensure-dirs xdg gitconfig shell-links vim tools
+install: check-email ensure-dirs xdg gitconfig shell-links vim nvim tools
 
 gitconfig: check-email check-signingkey ensure-dirs
 	@$(BASH_INIT); \
@@ -93,6 +94,28 @@ shell-links: ensure-dirs
 	_safe_symlink "$(DOTFILES)/shells/.bashenv"      "$(HOME)/.bashenv" && \
 	_safe_symlink "$(DOTFILES)/shells/.zshrc"        "$(HOME)/.zshrc" && \
 	_safe_symlink "$(DOTFILES)/shells/.dircolors"    "$(HOME)/.dircolors"
+
+nvim:
+	@_nvim_ok=0; \
+	if command -v nvim > /dev/null 2>&1; then \
+		_major=$$(nvim --version | head -1 | grep -oP 'v\K\d+'); \
+		_minor=$$(nvim --version | head -1 | grep -oP 'v\d+\.\K\d+'); \
+		[ "$$_major" -gt 0 ] || [ "$$_minor" -ge 10 ] && _nvim_ok=1; \
+	fi; \
+	if [ "$$_nvim_ok" -eq 0 ]; then \
+		echo "installing neovim (latest stable)..."; \
+		if command -v brew > /dev/null 2>&1; then \
+			brew install neovim; \
+		else \
+			curl -fsSL https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz \
+				| tar -xz -C /usr/local --strip-components=1; \
+		fi; \
+	else \
+		echo "neovim $$(nvim --version | head -1) already installed, skipping"; \
+	fi
+	@$(BASH_INIT); \
+	_safe_symlink "$(DOTFILES)/shells/xdg_home/config/nvim" "$(HOME)/.config/nvim"
+	@echo "neovim ready -- run 'nvim' to trigger lazy.nvim bootstrap on first launch"
 
 tools:
 	@if command -v apt-get > /dev/null 2>&1; then \

@@ -15,7 +15,9 @@ return {
         lazy = false,
         priority = 1000,
         config = function()
-            require("solarized").setup({ transparent = true })
+            require("solarized").setup({
+                styles = { transparency = true },
+            })
             vim.cmd.colorscheme("solarized")
         end,
     },
