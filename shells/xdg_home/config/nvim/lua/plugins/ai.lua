@@ -14,10 +14,12 @@ return {
             "hrsh7th/nvim-cmp",
         },
         opts = {
-            provider = "claude",
-            claude = {
-                model = "claude-sonnet-4-5",
+            providers = {
+                claude = {
+                    model = "claude-sonnet-4-5",
+                },
             },
+            provider = "claude",
         },
     },
 }
