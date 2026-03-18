@@ -39,11 +39,15 @@ return {
     {
         "nvim-treesitter/nvim-treesitter",
         build = ":TSUpdate",
-        main = "nvim-treesitter.configs",
-        opts = {
-            ensure_installed = { "bash", "python", "lua", "json", "yaml", "markdown", "latex" },
-            highlight = { enable = true },
-            indent    = { enable = true },
-        },
+        event = { "BufReadPost", "BufNewFile" },
+        config = function()
+            vim.schedule(function()
+                require("nvim-treesitter.configs").setup({
+                    ensure_installed = { "bash", "python", "lua", "json", "yaml", "markdown", "latex" },
+                    highlight        = { enable = true },
+                    indent           = { enable = true },
+                })
+            end)
+        end,
     },
 }
