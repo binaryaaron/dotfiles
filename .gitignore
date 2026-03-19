@@ -1,1 +1,4 @@
 # All generated artifacts live in dist/ — see dist/.gitignore
+
+# atuin writes this after install; not part of the config
+shells/xdg_home/config/atuin/atuin-receipt.json

@@ -1,21 +1,15 @@
 #!/usr/bin/env zsh
 
 DOTFILES="${DOTFILES:-$HOME/dotfiles}"
-SHELLS_DIR="$DOTFILES/shells"
-source "$SHELLS_DIR/zsh_completions.sh"
-source "$SHELLS_DIR/commonrc.sh"
+. "$DOTFILES/shells/zsh_completions.sh"
+. "$DOTFILES/shells/commonrc.sh"
 
-
-# you will need to add the lines below
-# https://github.com/astral-sh/uv/issues/8432#issuecomment-2453494736
+# uv run completion: prefer .py files until one is present, then any file
 _uv_run_mod() {
     if [[ "$words[2]" == "run" && "$words[CURRENT]" != -* ]]; then
-        # Check if any previous argument after 'run' ends with .py
         if [[ ${words[3,$((CURRENT-1))]} =~ ".*\.py" ]]; then
-            # Already have a .py file, complete any files
             _arguments '*:filename:_files'
         else
-            # No .py file yet, complete only .py files
             _arguments '*:filename:_files -g "*.py"'
         fi
     else
@@ -24,9 +18,7 @@ _uv_run_mod() {
 }
 # compdef _uv_run_mod uv
 
-source "$SHELLS_DIR/starship.sh"
-
-if [ -f "$HOME/.local.zshrc" ]; then
-    source "$HOME/.local.zshrc"
-    command -v add_kube_configs > /dev/null 2>&1 && add_kube_configs
-fi
+# machine-local extras (e.g. k8s ConfigMap, per-machine overrides)
+[ -f /startup/bashrc_extras.sh ] && . /startup/bashrc_extras.sh
+[ -f "$HOME/.local.zshrc" ] && . "$HOME/.local.zshrc"
+command -v add_kube_configs > /dev/null 2>&1 && add_kube_configs

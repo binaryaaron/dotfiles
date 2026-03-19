@@ -1,35 +1,16 @@
-shell_type=$(basename $SHELL)
-XDG_HOME=${XDG_HOME:-$HOME}
-export XDG_HOME
+[ -n "$_ENVVARS_SOURCED" ] && return; _ENVVARS_SOURCED=1
 
-XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$XDG_HOME/.config}
-XDG_DATA_HOME=${XDG_DATA_HOME:-$XDG_HOME/.local/share}
-XDG_CACHE_HOME=${XDG_CACHE_HOME:-$XDG_HOME/.cache}
-XDG_BIN_HOME=${XDG_BIN_HOME:-$XDG_HOME/.local/bin}
+export XDG_HOME="${XDG_HOME:-$HOME}"
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$XDG_HOME/.config}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:-$XDG_HOME/.local/share}"
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$XDG_HOME/.cache}"
+export XDG_BIN_HOME="${XDG_BIN_HOME:-$XDG_HOME/.local/bin}"
+export EDITOR="${EDITOR:-vim}"
+export HISTSIZE=100000
 
-export XDG_CONFIG_HOME
-export XDG_CACHE_HOME
-export XDG_DATA_HOME
-export XDG_BIN_HOME
-export EDITOR='vim'
-
-HISTFILE="$HOME/.${shell_type}_history"
-HISTSIZE=100000
-SAVEHIST=100000
-export PATH="$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH"
-
-if [ -f "$HOME/.cargo/env" ]; then
-    . "$HOME/.cargo/env"
-fi
-
-
-# add binaries to PATH if they aren't added yet
-# affix colons on either side of $PATH to simplify matching
-case ":${PATH}:" in
-    *:"$HOME/.local/bin":*)
-        ;;
-    *)
-    # Prepending path in case a system-installed binary needs to be overridden
-    export PATH="$HOME/.local/bin:$PATH"
-    ;;
+case ":$PATH:" in
+    *:"$HOME/.local/bin":*) ;;
+    *) export PATH="$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH" ;;
 esac
+
+[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"

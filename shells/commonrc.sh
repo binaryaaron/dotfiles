@@ -6,5 +6,6 @@ DOTFILES="${DOTFILES:-$HOME/dotfiles}"
 . "$DOTFILES/shells/aliases/aliases.sh"
 . "$DOTFILES/shells/aliases/bazel_aliases.sh"
 . "$DOTFILES/shells/completions.sh"
+. "$DOTFILES/shells/starship.sh"
 
 set -o vi
