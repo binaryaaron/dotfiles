@@ -42,7 +42,7 @@ help:
 	@echo "       SIGNINGKEY defaults to ~/.ssh/id_ed25519.pub if not specified"
 	@echo ""
 	@echo "Targets:"
-	@echo "  install      Full bootstrap: ensure-dirs + xdg + gitconfig + shell-links + vim + tools"
+	@echo "  install      Full bootstrap: ensure-dirs + xdg + gitconfig + shell-links
 	@echo "  gitconfig    Write shared .gitconfig and inject [include] into ~/.gitconfig"
 	@echo "  xdg          Create XDG dirs and symlink configs/bins into ~/.config and ~/.local/bin"
 	@echo "  shell-links  Symlink shell rc files (~/.bashrc, ~/.zshrc, etc.)"
@@ -75,7 +75,7 @@ ensure-dirs:
 	@mkdir -p "$(LOCAL_BIN)" "$(XDG_CONFIG)" "$(XDG_CACHE)"
 	@echo "dirs: $(LOCAL_BIN), $(XDG_CONFIG), $(XDG_CACHE)"
 
-install: check-email ensure-dirs xdg gitconfig shell-links vim nvim tools
+install: check-email ensure-dirs xdg gitconfig tools shell-links
 
 gitconfig: check-email check-signingkey ensure-dirs
 	@$(BASH_INIT); \
@@ -137,7 +137,7 @@ tools:
 		{ echo "installing starship..."; FORCE=1 curl -sS https://starship.rs/install.sh | sh; }
 		# FORCE=1 above is the starship installer's own flag to skip version checks, unrelated to dotfiles FORCE
 	@command -v atuin > /dev/null 2>&1 || \
-		{ echo "installing atuin..."; curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh; }
+		{ echo "installing atuin..."; curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh -s -- --non-interactive }
 	@[ -f "$(HOME)/.bash-preexec.sh" ] || \
 		{ echo "installing bash-preexec..."; curl -sS https://raw.githubusercontent.com/rcaloras/bash-preexec/master/bash-preexec.sh -o "$(HOME)/.bash-preexec.sh"; }
 

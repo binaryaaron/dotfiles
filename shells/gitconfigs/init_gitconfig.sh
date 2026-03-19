@@ -40,6 +40,7 @@ _write_shared_gitconfig() {
 	restore-staged = restore --staged .
 	restore-all = "!git restore --staged . && git restore ."
 	add-signoffs = rebase main --signoff
+	branch-point = "!git merge-base ${1:-main} HEAD"
 [color]
 	ui = auto
 [push]
@@ -61,24 +62,28 @@ _write_shared_gitconfig() {
 	branch = false
 [rerere]
 	enabled = true
-[gpg]
-	format = ssh
-[commit]
-	gpgsign = true
 [pull]
 	rebase = true
+[commit]
+	gpgsign = true
+[gpg]
+	format = ssh
+
 EOF
 
 	# Append paths that expand at write-time (contain $HOME / $DOTFILES)
 	cat <<EOF >> "$gitconfig_dest"
+[gpg "ssh"]
+	allowedSignersFile = $HOME/.ssh/allowed_signers
+
+[credential "https://github.com"]
+	helper = !$(which gh) auth git-credential
+
 [core]
 	excludesfile = $gitignore_dest
 	pager = less
 	autocrlf = input
-[gpg "ssh"]
-	allowedSignersFile = $HOME/.ssh/allowed_signers
-[credential "https://github.com"]
-	helper = !$HOME/.local/bin/gh auth git-credential
+
 EOF
 }
 

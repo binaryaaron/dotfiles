@@ -82,6 +82,7 @@ nmap <c-h> <c-w>h<c-w><Bar>
 nmap <c-l> <c-w>l<c-w><Bar>
 
 " whitespace visibility
+set encoding=utf-8
 set list
 set listchars=nbsp:¬,tab:»·,trail:·
 
