@@ -28,3 +28,11 @@ _safe_symlink() {
 	ln -s "$src" "$dst"
 	echo "linked $dst -> $src"
 }
+
+show_large_folders() {
+	local path="${1:-.}"
+    local depth="${1:-2}"
+    local min_gb="${2:-1}"
+    local min_mb=$((min_gb * 1024))
+    du -m --max-depth="$depth" "$path" | awk -v min="$min_mb" '$1 >= min { printf "%.1fG\t%s\n", $1/1024, $2 }' | sort -t$'\t' -k1 -rn
+}
