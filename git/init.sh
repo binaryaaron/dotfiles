@@ -17,7 +17,7 @@ _write_shared_gitconfig() {
 
 	cat <<'EOF' > "$gitconfig_dest"
 [alias]
-	slog = log --pretty=format:'%C(auto)%h%Creset | %C(red)%as%Creset | %C(auto)%d%Creset | %C(green)%s%Creset | %C(blue)%aN%Creset' --simplify-by-decoration --graph
+	slog = log --pretty=format:'%C(auto)%h%Creset | %C(red)%as%Creset | %C(auto)%d%Creset | %C(green)%s%Creset | %C(blue)%aN%Creset' --graph
 	l = slog
 	l5 = l -5
 	ls = slog --decorate -25
