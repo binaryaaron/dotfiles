@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-. "$DOTFILES/shells/utils.sh"
+. "$DOTFILES/shell/utils.sh"
 
 # Shared, portable git settings that belong in the dotfiles repo.
 # Does NOT contain user identity (name/email) or machine-specific credential
@@ -11,13 +11,13 @@
 # evaluating later sections in the including file).
 _write_shared_gitconfig() {
 	local gitconfig_dest="$1"
-	local gitignore_dest="$DOTFILES/shells/gitconfigs/.gitignore_global"
+	local gitignore_dest="$DOTFILES/git/ignore"
 
 	mkdir -p "$(dirname "$gitconfig_dest")"
 
 	cat <<'EOF' > "$gitconfig_dest"
 [alias]
-	slog = log --pretty=format:'%C(auto)%h %C(red)%as %C(blue)%aN%C(auto)%d%C(green) %s'
+	slog = log --pretty=format:'%C(auto)%h%Creset | %C(red)%as%Creset | %C(auto)%d%Creset | %C(green)%s%Creset | %C(blue)%aN%Creset' --simplify-by-decoration --graph
 	l = slog
 	l5 = l -5
 	ls = slog --decorate -25
@@ -40,6 +40,7 @@ _write_shared_gitconfig() {
 	restore-staged = restore --staged .
 	restore-all = "!git restore --staged . && git restore ."
 	add-signoffs = rebase main --signoff
+	branch-point = "!git merge-base ${1:-main} HEAD"
 [color]
 	ui = auto
 [push]
@@ -61,24 +62,28 @@ _write_shared_gitconfig() {
 	branch = false
 [rerere]
 	enabled = true
-[gpg]
-	format = ssh
-[commit]
-	gpgsign = true
 [pull]
 	rebase = true
+[commit]
+	gpgsign = true
+[gpg]
+	format = ssh
+
 EOF
 
 	# Append paths that expand at write-time (contain $HOME / $DOTFILES)
 	cat <<EOF >> "$gitconfig_dest"
+[gpg "ssh"]
+	allowedSignersFile = $HOME/.ssh/allowed_signers
+
+[credential "https://github.com"]
+	helper = !$(which gh) auth git-credential
+
 [core]
 	excludesfile = $gitignore_dest
 	pager = less
 	autocrlf = input
-[gpg "ssh"]
-	allowedSignersFile = $HOME/.ssh/allowed_signers
-[credential "https://github.com"]
-	helper = !$HOME/.local/bin/gh auth git-credential
+
 EOF
 }
 
@@ -95,8 +100,8 @@ setup_gitconfig() {
 	local email="$1"
 	local name="${2:-${email%%@*}}"
 	local signingkey="${3:-}"
-	local gitconfig_dest="$DOTFILES/dist/generated_gitconfig"
-	local gitignore_dest="$DOTFILES/shells/gitconfigs/.gitignore_global"
+	local gitconfig_dest="$DOTFILES/git/generated_config"
+	local gitignore_dest="$DOTFILES/git/ignore"
 
 	if [ -z "$email" ]; then
 		echo "setup_gitconfig: EMAIL is required" >&2
