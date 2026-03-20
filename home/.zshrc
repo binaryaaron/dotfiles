@@ -1,8 +1,8 @@
 #!/usr/bin/env zsh
 
 DOTFILES="${DOTFILES:-$HOME/dotfiles}"
-. "$DOTFILES/shells/zsh_completions.sh"
-. "$DOTFILES/shells/commonrc.sh"
+. "$DOTFILES/shell/zsh_completions.sh"
+. "$DOTFILES/shell/commonrc.sh"
 
 # uv run completion: prefer .py files until one is present, then any file
 _uv_run_mod() {

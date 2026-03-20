@@ -8,7 +8,7 @@ case $- in
 esac
 
 DOTFILES="${DOTFILES:-$HOME/dotfiles}"
-. "$DOTFILES/shells/commonrc.sh"
+. "$DOTFILES/shell/commonrc.sh"
 
 # machine-local extras (e.g. k8s ConfigMap, per-machine overrides)
 [ -f /startup/bashrc_extras.sh ] && . /startup/bashrc_extras.sh

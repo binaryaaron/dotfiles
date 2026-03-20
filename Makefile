@@ -7,7 +7,7 @@
 #     in isolation (e.g. `make gitconfig` after editing aliases).
 #   - EMAIL is required for any target touching ~/.gitconfig identity; no
 #     defaults so teammates can't silently bootstrap with someone else's name.
-#   - gitconfig strategy: dist/generated_gitconfig holds shared portable prefs;
+#   - gitconfig strategy: git/generated_config holds shared portable prefs;
 #     ~/.gitconfig on each machine keeps local identity and gets a single
 #     [include] prepended. Sections after the include take precedence.
 
@@ -29,8 +29,8 @@ XDG_CACHE  := $(HOME)/.cache
 define BASH_INIT
 export DOTFILES=$(DOTFILES); \
 export FORCE=$(FORCE); \
-. $(DOTFILES)/shells/utils.sh; \
-. $(DOTFILES)/shells/envvars.sh
+. $(DOTFILES)/shell/utils.sh; \
+. $(DOTFILES)/shell/envvars.sh
 endef
 
 .DEFAULT_GOAL := help
@@ -79,21 +79,21 @@ install: check-email ensure-dirs xdg gitconfig tools shell-links
 
 gitconfig: check-email check-signingkey ensure-dirs
 	@$(BASH_INIT); \
-	. $(DOTFILES)/shells/gitconfigs/init_gitconfig.sh && \
+	. $(DOTFILES)/git/init.sh && \
 	setup_gitconfig "$(EMAIL)" "$(NAME)" "$(SIGNINGKEY)"
 
 xdg: ensure-dirs
 	@$(BASH_INIT); \
-	. $(DOTFILES)/shells/xdg_home/init_xdg_stuff.sh && \
+	. $(DOTFILES)/shell/init_xdg.sh && \
 	init_xdg_home
 
 shell-links: ensure-dirs
 	@$(BASH_INIT); \
-	_safe_symlink "$(DOTFILES)/shells/.bashrc"       "$(HOME)/.bashrc" && \
-	_safe_symlink "$(DOTFILES)/shells/.bash_profile" "$(HOME)/.bash_profile" && \
-	_safe_symlink "$(DOTFILES)/shells/.bashenv"      "$(HOME)/.bashenv" && \
-	_safe_symlink "$(DOTFILES)/shells/.zshrc"        "$(HOME)/.zshrc" && \
-	_safe_symlink "$(DOTFILES)/shells/.dircolors"    "$(HOME)/.dircolors"
+	_safe_symlink "$(DOTFILES)/home/.bashrc"       "$(HOME)/.bashrc" && \
+	_safe_symlink "$(DOTFILES)/home/.bash_profile" "$(HOME)/.bash_profile" && \
+	_safe_symlink "$(DOTFILES)/home/.bashenv"      "$(HOME)/.bashenv" && \
+	_safe_symlink "$(DOTFILES)/home/.zshrc"        "$(HOME)/.zshrc" && \
+	_safe_symlink "$(DOTFILES)/home/.dircolors"    "$(HOME)/.dircolors"
 
 nvim:
 	@_nvim_ok=0; \
@@ -113,9 +113,8 @@ nvim:
 	else \
 		echo "neovim $$(nvim --version | head -1) already installed, skipping"; \
 	fi
-	@$(BASH_INIT); \
-	_safe_symlink "$(DOTFILES)/shells/xdg_home/config/nvim" "$(HOME)/.config/nvim"
 	@echo "neovim ready -- run 'nvim' to trigger lazy.nvim bootstrap on first launch"
+	@echo "(nvim config is symlinked by 'make xdg' -- run that if ~/.config/nvim is missing)"
 
 tools:
 	@if command -v apt-get > /dev/null 2>&1; then \

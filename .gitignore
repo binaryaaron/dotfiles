@@ -1,4 +1,11 @@
-# All generated artifacts live in dist/ — see dist/.gitignore
+# Runtime state and secrets (safety net for any tool under config/)
+**/*.db
+**/*.db-shm
+**/*.db-wal
+**/key
 
-# atuin writes this after install; not part of the config
-shells/xdg_home/config/atuin/atuin-receipt.json
+# atuin install receipt
+config/atuin/atuin-receipt.json
+
+# macOS junk
+.DS_Store
