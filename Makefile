@@ -13,6 +13,23 @@
 
 DOTFILES := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 SHELL    := /usr/bin/env bash
+UNAME_S := $(shell uname -s)
+ARCH := $(shell uname -m)
+PLATFORM := $(shell echo $(UNAME_S) | tr '[:upper:]' '[:lower:]')
+
+ifeq ($(ARCH),x86_64)
+	ARCH := amd64
+endif
+ifeq ($(ARCH),aarch64)
+	ARCH := arm64
+endif
+
+ifeq ($(PLATFORM),darwin)
+	OS := darwin
+endif
+ifeq ($(PLATFORM),linux)
+	OS := linux
+endif
 
 # Identity — required for gitconfig/install, no defaults by design.
 EMAIL      ?=
@@ -95,7 +112,7 @@ shell-links: ensure-dirs
 	_safe_symlink "$(DOTFILES)/home/.zshrc"        "$(HOME)/.zshrc" && \
 	_safe_symlink "$(DOTFILES)/home/.dircolors"    "$(HOME)/.dircolors"
 
-nvim:
+nvim: tools
 	@_nvim_ok=0; \
 	if command -v nvim > /dev/null 2>&1; then \
 		_major=$$(nvim --version | head -1 | grep -oP 'v\K\d+'); \
@@ -117,21 +134,28 @@ nvim:
 	@echo "(nvim config is symlinked by 'make xdg' -- run that if ~/.config/nvim is missing)"
 
 tools:
+	@command -v npm > /dev/null 2>&1 || \
+		{ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash; \
+		. "$$HOME/.config/nvm/nvm.sh"; nvm install node; \
+		}
 	@if command -v apt-get > /dev/null 2>&1; then \
-		dpkg -l bash-completion 2>/dev/null | grep -q '^ii' || \
-			{ echo "installing bash-completion..."; apt-get install -y bash-completion; }; \
-	elif command -v brew > /dev/null 2>&1; then \
-		brew list bash-completion@2 > /dev/null 2>&1 || \
-			{ echo "installing bash-completion..."; brew install bash-completion@2; }; \
+		if [ "$(OS)" == "linux" ]; then \
+			dpkg -l bash-completion 2>/dev/null | grep -q '^ii' || \
+				{ echo "installing bash-completion..."; apt-get install -y bash-completion; }; \
+		elif [ "$(OS)" == "darwin" ]; then \
+			brew list bash-completion@2 > /dev/null 2>&1 || \
+				{ echo "installing bash-completion..."; brew install bash-completion@2; }; \
+		fi; \
 	fi
 	@command -v tree-sitter > /dev/null 2>&1 || \
 		{ echo "installing tree-sitter CLI..."; \
-			if command -v brew > /dev/null 2>&1; then \
+		  if [ "$(OS)" == "darwin" ]; then \
 			brew install tree-sitter; \
-		else \
+		  else \
 			curl -fsSL https://github.com/tree-sitter/tree-sitter/releases/latest/download/tree-sitter-linux-x64.gz \
 				| gunzip > /usr/local/bin/tree-sitter && chmod +x /usr/local/bin/tree-sitter; \
-		fi; }
+		  fi; \
+		}
 	@# FORCE=1 below is the starship installer flag, unrelated to dotfiles FORCE
 	@command -v starship > /dev/null 2>&1 || \
 		{ echo "installing starship..."; FORCE=1 curl -sS https://starship.rs/install.sh | sh; }
