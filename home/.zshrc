@@ -17,8 +17,3 @@ _uv_run_mod() {
     fi
 }
 # compdef _uv_run_mod uv
-
-# machine-local extras (e.g. k8s ConfigMap, per-machine overrides)
-[ -f /startup/bashrc_extras.sh ] && . /startup/bashrc_extras.sh
-[ -f "$HOME/.local.zshrc" ] && . "$HOME/.local.zshrc"
-command -v add_kube_configs > /dev/null 2>&1 && add_kube_configs

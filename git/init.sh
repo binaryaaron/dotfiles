@@ -46,8 +46,14 @@ _write_shared_gitconfig() {
 [push]
 	default = simple
 	autoSetupRemote = true
+# safe.directory scoped to ~/dev so cross-UID clones there (docker bind mounts,
+# shared hosts, cursor worktrees) Just Work without flipping CVE-2022-24765
+# protection off globally. Git expands ~ and a trailing /* matches direct
+# children only; add more entries in your local ~/.gitconfig if your repos
+# live elsewhere.
 [safe]
-	directory = *
+	directory = ~/dev
+	directory = ~/dev/*
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
@@ -64,8 +70,11 @@ _write_shared_gitconfig() {
 	enabled = true
 [pull]
 	rebase = true
-[commit]
-	gpgsign = true
+# gpgsign lives in the per-host stub (_bootstrap_local_gitconfig), gated on
+# the signing key actually existing. Keeping it here would break `git commit`
+# on any machine without an SSH key (commit would abort on missing allowed
+# signers), which is exactly the kind of surprise a dotfiles include should
+# not cause. Machines with a key still get it via the local include.
 [gpg]
 	format = ssh
 
@@ -76,15 +85,28 @@ EOF
 [gpg "ssh"]
 	allowedSignersFile = $HOME/.ssh/allowed_signers
 
-[credential "https://github.com"]
-	helper = !$(which gh) auth git-credential
-
 [core]
 	excludesfile = $gitignore_dest
 	pager = less
 	autocrlf = input
 
 EOF
+
+	# `gh auth git-credential` is only valid when gh is installed. Emit the
+	# helper line only if gh is resolvable now; on hosts without gh, git's
+	# default credential flow (or ~/.gitconfig local entries) takes over.
+	# gh is installed via mise (see config/mise/config.toml); re-run
+	# `make gitconfig` after `make tools` to pick it up.
+	if command -v gh > /dev/null 2>&1; then
+		cat <<EOF >> "$gitconfig_dest"
+[credential "https://github.com"]
+	helper = !$(command -v gh) auth git-credential
+
+EOF
+	else
+		echo "note: gh not found on PATH -- skipping [credential] helper for github.com." >&2
+		echo "      install via 'make tools' (mise) and re-run 'make gitconfig' to add it." >&2
+	fi
 }
 
 # Ensure ~/.gitconfig exists with a minimal local identity stub, then inject
@@ -108,8 +130,10 @@ setup_gitconfig() {
 		return 1
 	fi
 
+	# Locate signing key if caller didn't pass one. Missing key is non-fatal
+	# now -- we'll simply skip the signing config so git commit still works.
 	if [ -z "$signingkey" ]; then
-		signingkey=$(_find_ssh_signing_key) || return 1
+		signingkey=$(_find_ssh_signing_key) || signingkey=""
 	fi
 
 	_write_shared_gitconfig "$gitconfig_dest"
@@ -131,6 +155,17 @@ setup_gitconfig() {
 	else
 		echo "[include] already present in $HOME/.gitconfig, nothing to do"
 	fi
+
+	# Opt this host into SSH commit signing only if a signing key was found.
+	# Using `git config --global` (not a template overwrite) so re-running
+	# setup_gitconfig is idempotent and leaves user-added settings intact.
+	if [ -n "$signingkey" ]; then
+		git config --global user.signingkey "$signingkey"
+		git config --global commit.gpgsign true
+		echo "enabled ssh commit signing with $signingkey"
+	else
+		echo "note: no ssh signing key found; commit.gpgsign left unset on this host" >&2
+	fi
 }
 
 # Find the first available SSH public key suitable for commit signing.
@@ -147,11 +182,13 @@ _find_ssh_signing_key() {
 }
 
 # Write a minimal local ~/.gitconfig with identity and OS credential helper.
-# Only called when no ~/.gitconfig exists at all (fresh machine).
+# Only called when no ~/.gitconfig exists at all (fresh machine). signingkey
+# and commit.gpgsign are set by setup_gitconfig via `git config --global`
+# after this runs, so they're not baked into the template.
 _bootstrap_local_gitconfig() {
 	local email="$1"
 	local name="$2"
-	local signingkey="$3"
+	local _signingkey_unused="$3"  # handled by caller via git config --global
 
 	local credential_section
 	local os_type
@@ -166,7 +203,6 @@ _bootstrap_local_gitconfig() {
 [user]
 	name = $name
 	email = $email
-	signingkey = $signingkey
 EOF
 	[ -n "$credential_section" ] && printf "$credential_section\n" >> "$HOME/.gitconfig"
 	echo "created minimal $HOME/.gitconfig"

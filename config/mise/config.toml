@@ -1,0 +1,62 @@
+# Global user mise config -- symlinked into ~/.config/mise/config.toml by `make xdg`.
+#
+# https://mise.jdx.dev/configuration.html
+#
+# Project-level mise.toml files recurse upward from cwd and override these,
+# so this file sets sensible global defaults only. Anything pinned per-project
+# (Python, Node, etc.) belongs in that project's mise.toml, not here.
+#
+# After editing, run `mise install` to materialize new tools.
+
+min_version = { soft = "2026.4.0" }
+
+# Tools NOT managed here (installed elsewhere):
+#   - bash-preexec: required by atuin on bash; no mise backend packages it.
+#     Installed via `make tools` (curl from rcaloras/bash-preexec).
+#   - mise itself: bootstrapped by `make install-mise` (GPG-verified).
+#
+# Per-machine overrides: drop a ~/.config/mise/config.local.toml next to this
+# file; mise merges local on top of the committed config.
+
+[tools]
+# Shell / terminal
+starship    = "latest"
+atuin       = "latest"
+
+# Editors / LSP support
+neovim      = "latest"
+tree-sitter = "latest"
+
+# Everyday CLI
+jq          = "latest"
+yq          = "latest"
+ripgrep     = "latest"
+github-cli  = "latest"
+
+# Runtimes (replacing nvm; project mise.toml files should pin specific versions)
+node        = "lts"
+
+# Python tooling -- uv manages venvs and Python itself per-project
+uv          = "latest"
+
+# Fetched from GitHub releases (mise's ubi backend was renamed to github: in
+# 2026.4; `exe = "btm"` is required because bottom's release archive contains
+# `btm`, not `bottom`, so the default "binary name == repo name" rule fails).
+"github:ClementTsang/bottom" = { version = "latest", exe = "btm" }
+
+[settings]
+# Write mise.lock in projects that have a mise.toml -- reproducible tool versions.
+lockfile = true
+
+# Let mise honor .nvmrc / .python-version / .tool-versions files in repos
+# that don't (yet) have a mise.toml.
+idiomatic_version_file_enable_tools = ["node", "python"]
+
+[settings.node]
+# Skip GPG verification of Node release SHASUMs. The nodejs.org download is
+# already HTTPS-pinned; meanwhile, keyboxd (gpg 2.4+) is fragile on shared /
+# containerized dev hosts (orphan sockets, missing daemon) and its failure
+# aborts `mise install` for every node-using repo. If you want signature
+# verification back, fix gpg on the host (`gpgconf --kill all && gpgconf
+# --launch keyboxd`) and delete this block.
+gpg_verify = false

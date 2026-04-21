@@ -13,5 +13,5 @@ $biber = 'biber --debug %O %S';
 # Extra file extensions to clean when latexmk -c or latexmk -C is used
 $clean_ext = '%R.run.xml %R.synctex.gz';
 
-$pdf_previewer="open -a /opt/homebrew-cask/Caskroom/skim/1.4.15/Skim.app";
+$pdf_previewer="open -a Skim";
 $clean_ext="paux lox pdfsync out"

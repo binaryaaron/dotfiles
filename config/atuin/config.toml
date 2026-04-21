@@ -88,6 +88,8 @@ inline_height = 20
 ## characters that count as a part of a word
 # word_chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
+command_chaining = true
+
 ## number of context lines to show when scrolling by pages
 # scroll_context_lines = 1
 
@@ -156,7 +158,7 @@ search_mode = "daemon-fuzzy"
 ## keybinding is defined.  If this is set to "emacs", "vim-insert", or
 ## "vim-normal", the startup keymap mode in the Atuin search is forced to be
 ## the specified one.
-# keymap_mode = "vim_insert"
+keymap_mode = "vim-insert"
 
 ## Cursor style in each keymap mode.  If specified, the cursor style is changed
 ## in entering the cursor shape.  Available values are "default" and

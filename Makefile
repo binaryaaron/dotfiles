@@ -12,10 +12,17 @@
 #     [include] prepended. Sections after the include take precedence.
 
 DOTFILES := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
-SHELL    := /usr/bin/env bash
+SHELL    := bash
 UNAME_S := $(shell uname -s)
 ARCH := $(shell uname -m)
 PLATFORM := $(shell echo $(UNAME_S) | tr '[:upper:]' '[:lower:]')
+
+# Put mise shims on PATH for recipes so `tree-sitter`, `jq`, etc. resolve to
+# mise-managed versions during bootstrap without requiring shell activation.
+export PATH := $(HOME)/.local/share/mise/shims:$(HOME)/.local/bin:$(PATH)
+
+# mise install pinning -- bumped in lockstep with Safe-Synthesizer/other repos.
+MISE_GPG_KEY := 24853EC9F655CE80B48E6C3A8B81C9D17413A06D
 
 ifeq ($(ARCH),x86_64)
 	ARCH := amd64
@@ -52,7 +59,7 @@ endef
 
 .DEFAULT_GOAL := help
 
-.PHONY: help install gitconfig xdg shell-links vim nvim tools check-email check-signingkey ensure-dirs restore
+.PHONY: help install gitconfig xdg shell-links vim nvim tools cursor-hooks check-email check-signingkey ensure-dirs restore install-mise mise-install
 
 help:
 	@echo "Usage: make <target> EMAIL=you@example.com [NAME='Your Name'] [SIGNINGKEY=~/.ssh/id_ed25519.pub] [FORCE=1]"
@@ -64,8 +71,11 @@ help:
 	@echo "  xdg          Create XDG dirs and symlink configs/bins into ~/.config and ~/.local/bin"
 	@echo "  shell-links  Symlink shell rc files (~/.bashrc, ~/.zshrc, etc.)"
 	@echo "  vim          Symlink ~/.vimrc and ~/.vim, install Vundle plugins"
-	@echo "  nvim         Symlink ~/.config/nvim and install neovim if missing"
-	@echo "  tools        Install bash-completion, starship, atuin, bash-preexec if not already present"
+	@echo "  nvim         Reminder: nvim is installed via mise (make tools); config symlinked by 'make xdg'"
+	@echo "  install-mise Install mise itself (GPG-verified if gpg is available)"
+	@echo "  mise-install Trust global mise config and run 'mise install' (tools list lives in config/mise/config.toml)"
+	@echo "  tools        Install system bits mise can't own (bash-completion, bash-preexec) then run mise-install"
+	@echo "  cursor-hooks Merge atuin capture hooks into ~/.cursor/hooks.json (idempotent); symlinks scripts into ~/.cursor/hooks/atuin/"
 	@echo "  restore      Restore .bak files and remove dotfile symlinks"
 	@echo "  ensure-dirs  Create $(LOCAL_BIN), $(XDG_CONFIG), $(XDG_CACHE) if missing"
 	@echo ""
@@ -83,16 +93,26 @@ check-email:
 
 check-signingkey:
 	@if [ ! -f "$(SIGNINGKEY)" ]; then \
-		echo "WARNING: SIGNINGKEY not found at $(SIGNINGKEY) -- git commits will not be signed" >&2; \
-		echo "         Generate one with: ssh-keygen -t ed25519 -C you@example.com" >&2; \
-		echo "         Or pass a different path: make gitconfig SIGNINGKEY=~/.ssh/other.pub" >&2; \
+		echo "note: SIGNINGKEY not found at $(SIGNINGKEY) -- commit.gpgsign will be skipped on this host." >&2; \
+		echo "      generate one with: ssh-keygen -t ed25519 -C you@example.com" >&2; \
+		echo "      or pass a different path: make gitconfig SIGNINGKEY=~/.ssh/other.pub" >&2; \
 	fi
 
 ensure-dirs:
 	@mkdir -p "$(LOCAL_BIN)" "$(XDG_CONFIG)" "$(XDG_CACHE)"
 	@echo "dirs: $(LOCAL_BIN), $(XDG_CONFIG), $(XDG_CACHE)"
 
-install: check-email ensure-dirs xdg gitconfig shell-links tools
+# Order matters: tools first so mise-managed binaries (gh, jq, ...) are on
+# PATH before gitconfig runs -- gitconfig emits the gh credential helper
+# only when `command -v gh` succeeds at generation time.
+install: check-email ensure-dirs tools xdg gitconfig shell-links
+
+# Note: the former `profile` target (which appended `export BASH_ENV=...`
+# to ~/.profile) has been removed. BASH_ENV caused non-interactive `bash -c`
+# invocations -- of which the Cursor persistent-shell wrapper issues many --
+# to re-source ~/.bashenv on every call, amplifying startup cost and
+# stacking wrapper bashes. Interactive shell setup is handled by ~/.bashrc;
+# non-interactive shells inherit the parent environment.
 
 gitconfig: check-email check-signingkey ensure-dirs
 	@$(BASH_INIT); \
@@ -110,59 +130,121 @@ shell-links: ensure-dirs
 	_safe_symlink "$(DOTFILES)/home/.bash_profile" "$(HOME)/.bash_profile" && \
 	_safe_symlink "$(DOTFILES)/home/.bashenv"      "$(HOME)/.bashenv" && \
 	_safe_symlink "$(DOTFILES)/home/.zshrc"        "$(HOME)/.zshrc" && \
-	_safe_symlink "$(DOTFILES)/home/.dircolors"    "$(HOME)/.dircolors"
+	_safe_symlink "$(DOTFILES)/home/.zprofile"     "$(HOME)/.zprofile" && \
+	_safe_symlink "$(DOTFILES)/home/.dircolors"    "$(HOME)/.dircolors" && \
+	_safe_symlink "$(DOTFILES)/home/.latexmkrc"    "$(HOME)/.latexmkrc"
 
 nvim: tools
-	@_nvim_ok=0; \
-	if command -v nvim > /dev/null 2>&1; then \
-		_major=$$(nvim --version | head -1 | grep -oP 'v\K\d+'); \
-		_minor=$$(nvim --version | head -1 | grep -oP 'v\d+\.\K\d+'); \
-		[ "$$_major" -gt 0 ] || [ "$$_minor" -ge 10 ] && _nvim_ok=1; \
-	fi; \
-	if [ "$$_nvim_ok" -eq 0 ]; then \
-		echo "installing neovim (latest stable)..."; \
-		if command -v brew > /dev/null 2>&1; then \
-			brew install neovim; \
-		else \
-			curl -fsSL https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz \
-				| tar -xz -C /usr/local --strip-components=1; \
-		fi; \
-	else \
-		echo "neovim $$(nvim --version | head -1) already installed, skipping"; \
-	fi
-	@echo "neovim ready -- run 'nvim' to trigger lazy.nvim bootstrap on first launch"
+	@echo "neovim is managed by mise (declared in config/mise/config.toml)."
+	@echo "'make tools' already installed it; check with: mise ls neovim"
+	@echo "run 'nvim' to trigger lazy.nvim bootstrap on first launch"
 	@echo "(nvim config is symlinked by 'make xdg' -- run that if ~/.config/nvim is missing)"
+	@# Alias `vim` to nvim via a $(LOCAL_BIN) exec wrapper. $(LOCAL_BIN)
+	@# precedes /usr/bin on PATH (see shell/envvars.sh), so this shadows any
+	@# system vim. A wrapper is used instead of a symlink because mise shims
+	@# dispatch on $$argv[0]: a symlink named `vim` pointing at the nvim shim
+	@# makes mise reject it ("vim is not a valid shim").
+	@printf '#!/usr/bin/env bash\nexec nvim "$$@"\n' > "$(LOCAL_BIN)/vim"
+	@chmod +x "$(LOCAL_BIN)/vim"
+	@echo "wrote $(LOCAL_BIN)/vim (exec wrapper -> nvim)"
 
-tools:
-	@command -v npm > /dev/null 2>&1 || \
-		{ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash; \
-		. "$$HOME/.config/nvm/nvm.sh"; nvm install node; \
-		}
-	@if command -v apt-get > /dev/null 2>&1; then \
-		if [ "$(OS)" == "linux" ]; then \
-			dpkg -l bash-completion 2>/dev/null | grep -q '^ii' || \
-				{ echo "installing bash-completion..."; apt-get install -y bash-completion; }; \
-		elif [ "$(OS)" == "darwin" ]; then \
-			brew list bash-completion@2 > /dev/null 2>&1 || \
-				{ echo "installing bash-completion..."; brew install bash-completion@2; }; \
+# install mise itself. GPG-verified when gpg is available, per upstream
+# recommendation (https://mise.jdx.dev/installing-mise.html). install.sh.sig is
+# a GPG clearsigned document (script + signature in one file), so --decrypt
+# both verifies and extracts.
+install-mise:
+	@command -v mise > /dev/null 2>&1 || { \
+		set -euo pipefail; \
+		echo "mise not found -- installing..."; \
+		if command -v gpg > /dev/null 2>&1; then \
+			echo "verifying installer signature..."; \
+			gpg --batch --no-tty --keyserver hkps://keys.openpgp.org --recv-keys $(MISE_GPG_KEY); \
+			_tmp=$$(mktemp); \
+			curl -fsSL https://mise.jdx.dev/install.sh.sig | gpg --batch --no-tty --decrypt > "$$_tmp"; \
+			sh "$$_tmp"; \
+			rm -f "$$_tmp"; \
+		else \
+			echo "WARNING: gpg not available -- installing without signature verification" >&2; \
+			curl -fsSL https://mise.run | sh; \
 		fi; \
-	fi
-	@command -v tree-sitter > /dev/null 2>&1 || \
-		{ echo "installing tree-sitter CLI..."; \
-		  if [ "$(OS)" == "darwin" ]; then \
-			brew install tree-sitter; \
-		  else \
-			curl -fsSL https://github.com/tree-sitter/tree-sitter/releases/latest/download/tree-sitter-linux-x64.gz \
-				| gunzip > /usr/local/bin/tree-sitter && chmod +x /usr/local/bin/tree-sitter; \
-		  fi; \
-		}
-	@# FORCE=1 below is the starship installer flag, unrelated to dotfiles FORCE
-	@command -v starship > /dev/null 2>&1 || \
-		{ echo "installing starship..."; FORCE=1 curl -sS https://starship.rs/install.sh | sh; }
-	@command -v atuin > /dev/null 2>&1 || \
-		{ echo "installing atuin..."; curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh -s -- --non-interactive; }
-	@[ -f "$(HOME)/.bash-preexec.sh" ] || \
-		{ echo "installing bash-preexec..."; curl -sS https://raw.githubusercontent.com/rcaloras/bash-preexec/master/bash-preexec.sh -o "$(HOME)/.bash-preexec.sh"; }
+		command -v mise > /dev/null 2>&1 || { echo "ERROR: mise not found on PATH after install -- ensure $$HOME/.local/bin is on PATH" >&2; exit 1; }; \
+	}
+	@mise --version
+
+# Install all tools declared in the global mise config
+# (config/mise/config.toml). Symlinks just the mise config dir into place
+# (full XDG linking happens via `make xdg`); mise trust then makes the config
+# auto-load without an interactive prompt.
+mise-install: install-mise ensure-dirs
+	@$(BASH_INIT); \
+	_safe_symlink "$(DOTFILES)/config/mise" "$(XDG_CONFIG)/mise"
+	MISE_YES=1 mise trust "$(XDG_CONFIG)/mise/config.toml"
+	MISE_YES=1 mise install
+	@# reshim is implicit after install, but keep it explicit: catches tools
+	@# that drop binaries mise didn't auto-detect, and restores shims if
+	@# ~/.local/share/mise/shims was nuked (rm -rf, container rebuild).
+	mise reshim
+	@echo "mise tools installed. PATH activation happens in commonrc.sh via 'mise activate'."
+
+tools: ensure-dirs mise-install
+	@set -e; \
+	_install() { \
+		local name="$$1" check="$$2" install="$$3"; \
+		if eval "$$check" > /dev/null 2>&1; then \
+			echo "$$name already installed, skipping"; \
+		else \
+			echo "installing $$name..."; \
+			eval "$$install"; \
+		fi; \
+	}; \
+	if [ "$(OS)" = "darwin" ]; then \
+		_install bash-completion 'brew list bash-completion@2' 'brew install bash-completion@2'; \
+	else \
+		if command -v apt-get > /dev/null 2>&1 && [ "$$(id -u)" = "0" ]; then \
+			_install bash-completion "dpkg -l bash-completion 2>/dev/null | grep -q '^ii'" 'apt-get install -y bash-completion'; \
+		fi; \
+	fi; \
+	_install bash-preexec '[ -f "$(HOME)/.bash-preexec.sh" ]' \
+		'curl -sS https://raw.githubusercontent.com/rcaloras/bash-preexec/master/bash-preexec.sh -o "$(HOME)/.bash-preexec.sh"'
+
+## Merge atuin capture hooks into ~/.cursor/hooks.json idempotently.
+## - Symlinks dotfiles scripts into ~/.cursor/hooks/atuin/ so edits in the repo
+##   propagate instantly.
+## - Backs up hooks.json to hooks.json.bak on first run (never overwrites).
+## - Uses absolute script paths; existing entries with the same command are
+##   deduplicated so repeated invocations are no-ops.
+cursor-hooks:
+	@set -e; \
+	command -v jq > /dev/null 2>&1 || { echo "ERROR: jq is required for cursor-hooks (install with 'make tools')" >&2; exit 1; }; \
+	_cursor_dir="$(HOME)/.cursor"; \
+	_hooks_json="$$_cursor_dir/hooks.json"; \
+	_atuin_dir="$$_cursor_dir/hooks/atuin"; \
+	_src_dir="$(DOTFILES)/config/cursor/hooks"; \
+	_pre="$$_atuin_dir/atuin-capture-cwd.sh"; \
+	_post="$$_atuin_dir/atuin-history.sh"; \
+	mkdir -p "$$_atuin_dir"; \
+	ln -sfn "$$_src_dir/atuin-capture-cwd.sh" "$$_pre"; \
+	ln -sfn "$$_src_dir/atuin-history.sh"     "$$_post"; \
+	echo "cursor-hooks: symlinked scripts into $$_atuin_dir"; \
+	if [ ! -f "$$_hooks_json" ]; then \
+		echo '{"version":1,"hooks":{}}' > "$$_hooks_json"; \
+		echo "cursor-hooks: created $$_hooks_json"; \
+	elif [ ! -f "$$_hooks_json.bak" ]; then \
+		cp "$$_hooks_json" "$$_hooks_json.bak"; \
+		echo "cursor-hooks: backed up existing hooks.json -> hooks.json.bak"; \
+	fi; \
+	jq --arg pre "$$_pre" --arg post "$$_post" \
+		'.hooks |= (. // {}) | .hooks.beforeShellExecution |= ((. // []) | map(select(.command != $$pre)) + [{"command": $$pre}]) | .hooks.afterShellExecution |= ((. // []) | map(select(.command != $$post)) + [{"command": $$post}])' \
+		"$$_hooks_json" > "$$_hooks_json.tmp" && mv "$$_hooks_json.tmp" "$$_hooks_json"; \
+	echo "cursor-hooks: merged atuin entries into $$_hooks_json"; \
+	echo ""; \
+	echo "Active shell-execution hooks:"; \
+	jq -r '.hooks.beforeShellExecution[]?.command | "  pre:  " + .' "$$_hooks_json"; \
+	jq -r '.hooks.afterShellExecution[]?.command  | "  post: " + .' "$$_hooks_json"; \
+	echo ""; \
+	echo "Reload Cursor (or save hooks.json) to activate. Verify with:"; \
+	echo "  ATUIN_CURSOR_LOG=/tmp/atuin-cursor.log  # set in Cursor env, then run a shell command"; \
+	echo "  atuin search --author cursor-agent -- ''"
 
 restore:
 	@$(BASH_INIT); \
@@ -179,9 +261,14 @@ restore:
 	_restore_symlink "$(HOME)/.bash_profile"; \
 	_restore_symlink "$(HOME)/.bashenv"; \
 	_restore_symlink "$(HOME)/.zshrc"; \
+	_restore_symlink "$(HOME)/.zprofile"; \
 	_restore_symlink "$(HOME)/.dircolors"; \
+	_restore_symlink "$(HOME)/.latexmkrc"; \
 	_restore_symlink "$(HOME)/.vimrc"; \
-	_restore_symlink "$(HOME)/.vim"
+	_restore_symlink "$(HOME)/.vim"; \
+	if [ -f "$(LOCAL_BIN)/vim" ] && grep -q 'exec nvim' "$(LOCAL_BIN)/vim" 2>/dev/null; then \
+		rm -f "$(LOCAL_BIN)/vim" && echo "removed $(LOCAL_BIN)/vim (vim->nvim wrapper)"; \
+	fi
 
 vim:
 	@if [ ! -d "$(VIM_DIR)/bundle/Vundle.vim" ]; then \
