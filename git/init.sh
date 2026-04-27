@@ -70,6 +70,8 @@ _write_shared_gitconfig() {
 	enabled = true
 [pull]
 	rebase = true
+[commit]
+	signoff = true
 # gpgsign lives in the per-host stub (_bootstrap_local_gitconfig), gated on
 # the signing key actually existing. Keeping it here would break `git commit`
 # on any machine without an SSH key (commit would abort on missing allowed
