@@ -11,8 +11,8 @@
 min_version = { soft = "2026.4.0" }
 
 # Tools NOT managed here (installed elsewhere):
-#   - bash-preexec: required by atuin on bash; no mise backend packages it.
-#     Installed via `make tools` (curl from rcaloras/bash-preexec).
+#   - ble.sh: preferred atuin preexec backend for bash; installed via `make tools`.
+#   - bash-preexec: fallback atuin backend for bash; installed via `make tools`.
 #   - mise itself: bootstrapped by `make install-mise` (GPG-verified).
 #
 # Per-machine overrides: drop a ~/.config/mise/config.local.toml next to this

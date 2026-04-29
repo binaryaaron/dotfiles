@@ -43,6 +43,7 @@ EMAIL      ?=
 NAME       ?=
 SIGNINGKEY ?= $(HOME)/.ssh/id_ed25519.pub
 FORCE      ?= 0
+BASH_TOOLS ?= auto
 
 VIM_DIR    := $(DOTFILES)/vim
 LOCAL_BIN  := $(HOME)/.local/bin
@@ -74,7 +75,7 @@ help:
 	@echo "  nvim         Reminder: nvim is installed via mise (make tools); config symlinked by 'make xdg'"
 	@echo "  install-mise Install mise itself (GPG-verified if gpg is available)"
 	@echo "  mise-install Trust global mise config and run 'mise install' (tools list lives in config/mise/config.toml)"
-	@echo "  tools        Install system bits mise can't own (bash-completion, bash-preexec) then run mise-install"
+	@echo "  tools        Install system bits mise can't own; ble.sh/bash-preexec only when login shell is bash (override: BASH_TOOLS=1)"
 	@echo "  cursor-hooks Merge atuin capture hooks into ~/.cursor/hooks.json (idempotent); symlinks scripts into ~/.cursor/hooks/atuin/"
 	@echo "  restore      Restore .bak files and remove dotfile symlinks"
 	@echo "  ensure-dirs  Create $(LOCAL_BIN), $(XDG_CONFIG), $(XDG_CACHE) if missing"
@@ -197,6 +198,20 @@ tools: ensure-dirs mise-install
 			eval "$$install"; \
 		fi; \
 	}; \
+	_user="$${USER:-$$(id -un 2>/dev/null || true)}"; \
+	_login_shell=""; \
+	if [ "$(BASH_TOOLS)" = "auto" ]; then \
+		if command -v getent > /dev/null 2>&1 && [ -n "$$_user" ]; then \
+			_login_shell=$$(getent passwd "$$_user" 2>/dev/null | cut -d: -f7); \
+		fi; \
+		if [ -z "$$_login_shell" ] && command -v dscl > /dev/null 2>&1 && [ -n "$$_user" ]; then \
+			_login_shell=$$(dscl . -read "/Users/$$_user" UserShell 2>/dev/null | awk '{print $$2}'); \
+		fi; \
+		_login_shell="$${_login_shell:-$${SHELL:-}}"; \
+		case "$$(basename "$$_login_shell")" in bash) _install_bash_tools=1 ;; *) _install_bash_tools=0 ;; esac; \
+	else \
+		case "$(BASH_TOOLS)" in 1|yes|true|bash) _install_bash_tools=1 ;; *) _install_bash_tools=0 ;; esac; \
+	fi; \
 	if [ "$(OS)" = "darwin" ]; then \
 		_install bash-completion 'brew list bash-completion@2' 'brew install bash-completion@2'; \
 	else \
@@ -204,8 +219,20 @@ tools: ensure-dirs mise-install
 			_install bash-completion "dpkg -l bash-completion 2>/dev/null | grep -q '^ii'" 'apt-get install -y bash-completion'; \
 		fi; \
 	fi; \
-	_install bash-preexec '[ -f "$(HOME)/.bash-preexec.sh" ]' \
-		'curl -sS https://raw.githubusercontent.com/rcaloras/bash-preexec/master/bash-preexec.sh -o "$(HOME)/.bash-preexec.sh"'
+	if [ "$$_install_bash_tools" = "1" ]; then \
+		if [ "$(OS)" = "darwin" ]; then \
+			_install gawk 'command -v gawk' 'brew install gawk'; \
+			_install gmake 'command -v gmake' 'brew install make'; \
+		elif command -v apt-get > /dev/null 2>&1 && [ "$$(id -u)" = "0" ]; then \
+			_install gawk 'command -v gawk' 'apt-get install -y gawk'; \
+		fi; \
+		_install ble.sh '[ -r "$(HOME)/.local/share/blesh/ble.sh" ]' \
+			'_tmp=$$(mktemp -d); trap "rm -rf \"$$_tmp\"" EXIT; git clone --recursive --depth 1 --shallow-submodules https://github.com/akinomyoga/ble.sh.git "$$_tmp/ble.sh"; if command -v gmake > /dev/null 2>&1; then _make=gmake; else _make=make; fi; command -v git > /dev/null 2>&1 && command -v gawk > /dev/null 2>&1 && command -v "$$_make" > /dev/null 2>&1 || { echo "ERROR: ble.sh requires git, gawk, and GNU make" >&2; exit 1; }; "$$_make" -C "$$_tmp/ble.sh" install PREFIX="$(HOME)/.local"; trap - EXIT; rm -rf "$$_tmp"'; \
+		_install bash-preexec '[ -f "$(HOME)/.bash-preexec.sh" ]' \
+			'curl -sS https://raw.githubusercontent.com/rcaloras/bash-preexec/master/bash-preexec.sh -o "$(HOME)/.bash-preexec.sh"'; \
+	else \
+		echo "skipping ble.sh/bash-preexec -- login shell is $${_login_shell:-unknown} (override with BASH_TOOLS=1)"; \
+	fi
 
 ## Merge atuin capture hooks into ~/.cursor/hooks.json idempotently.
 ## - Symlinks dotfiles scripts into ~/.cursor/hooks/atuin/ so edits in the repo

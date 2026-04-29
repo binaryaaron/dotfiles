@@ -7,5 +7,10 @@
 # atuin install receipt
 config/atuin/atuin-receipt.json
 
+# Cursor local state and secrets
+config/cursor/auth.json
+config/cursor/cli-config.json
+config/cursor/statsig-cache.json
+
 # macOS junk
 .DS_Store

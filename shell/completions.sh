@@ -43,8 +43,25 @@ _eval_if_found kubectl completion "$_shell"
 
 [ -f "$HOME/.config/op/plugins.sh" ] && . "$HOME/.config/op/plugins.sh"
 
-# bash-preexec must be sourced before atuin init (bash only -- zsh has native hooks)
-[ "$_shell" = "bash" ] && [ -f "$HOME/.bash-preexec.sh" ] && . "$HOME/.bash-preexec.sh"
+# Atuin prefers ble.sh on Bash; bash-preexec remains the fallback backend.
+# ble.sh's documented setup loads early with --attach=none and attaches late:
+# https://github.com/akinomyoga/ble.sh#13-set-up-bashrc
+if [ "$_shell" = "bash" ]; then
+    if [ -r "$HOME/.local/share/blesh/ble.sh" ] && [ -t 0 ] && [ -t 1 ] && [ -t 2 ]; then
+        source -- "$HOME/.local/share/blesh/ble.sh" --attach=none
+    elif [ -f "$HOME/.bash-preexec.sh" ]; then
+        . "$HOME/.bash-preexec.sh"
+    fi
+fi
+
+# Atuin's Bash integration requires an interactive preexec backend during init:
+# https://docs.atuin.sh/cli/guide/shell-integration/#bash
+# If a parent shell left atuin half-initialized, clear the guard so this shell
+# can register its preexec callbacks again.
+if [ "$_shell" = "bash" ] && [[ ${__atuin_initialized-} == true ]] && \
+   [[ " ${preexec_functions[*]-} " != *" __atuin_preexec "* ]]; then
+    unset __atuin_initialized
+fi
 
 _eval_if_found atuin init "$_shell"
 

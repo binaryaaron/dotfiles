@@ -19,6 +19,38 @@ export XDG_BIN_HOME="${XDG_BIN_HOME:-$XDG_HOME/.local/bin}"
 export EDITOR="${EDITOR:-vim}"
 export HISTSIZE=100000
 
+if [ -z "${USER:-}" ]; then
+    USER="$(id -un 2>/dev/null || printf '%s' "${LOGNAME:-}")"
+fi
+[ -n "${USER:-}" ] && export USER
+export LOGNAME="${LOGNAME:-$USER}"
+
+# Keep locale handling conservative: preserve host settings when they work, but
+# repair empty/broken values common in minimal containers and embedded shells.
+_dotfiles_locale_works() {
+    [ -n "$1" ] || return 1
+    command -v locale >/dev/null 2>&1 || return 0
+    case "$(LC_ALL="$1" locale charmap 2>/dev/null)" in
+        UTF-8|utf8|UTF8) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
+if ! _dotfiles_locale_works "${LANG:-}"; then
+    LANG=C.UTF-8
+fi
+export LANG
+
+if [ -n "${LC_ALL:-}" ] && ! _dotfiles_locale_works "$LC_ALL"; then
+    unset LC_ALL
+fi
+
+if [ -n "${LC_CTYPE:-}" ] && ! _dotfiles_locale_works "$LC_CTYPE"; then
+    unset LC_CTYPE
+fi
+
+unset -f _dotfiles_locale_works
+
 # --- PATH (single place to change order) ---
 #
 # Precedence (front -> back):

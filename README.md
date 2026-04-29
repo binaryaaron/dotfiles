@@ -52,7 +52,7 @@ Tool installation no longer needs root. `make tools` installs mise into `~/.loca
 
 ## Targets
 
-```
+```text
 make install       EMAIL=...   full bootstrap (ensure-dirs + xdg + gitconfig + shell-links + tools)
 make gitconfig     EMAIL=...   shared gitconfig + [include] in ~/.gitconfig
 make xdg                       XDG dirs + symlink configs, nvim, and bins
@@ -61,7 +61,7 @@ make vim                       symlink ~/.vimrc and ~/.vim, install Vundle plugi
 make nvim                      reminder target (nvim is installed by 'make tools' via mise)
 make install-mise              install mise itself (GPG-verified when gpg is available)
 make mise-install              trust global mise config and run 'mise install'
-make tools                     mise + every tool in config/mise/config.toml, plus bash-completion and bash-preexec
+make tools                     mise + tools in config/mise/config.toml; ble.sh/bash-preexec only for bash login shells
 make ensure-dirs               ~/.local/bin, ~/.config, ~/.cache
 make restore                   restore .bak files and remove dotfile symlinks
 ```
@@ -70,8 +70,8 @@ make restore                   restore .bak files and remove dotfile symlinks
 
 ## Layout
 
-```
-config/        symlinked into ~/.config/ (atuin, ghostty, mise, starship)
+```text
+config/        symlinked into ~/.config/ (atuin, blesh, ghostty, mise, starship)
 home/          symlinked 1:1 into $HOME (entrypoints: .bashrc, .zshrc, etc.)
 shell/         sourced at runtime by entrypoints (aliases, envvars, completions, utils)
 git/           gitconfig generator, global ignore, generated_config (gitignored)
@@ -103,7 +103,7 @@ export MISE_TRUSTED_CONFIG_PATHS="$HOME/dev"
 
 ### atuin
 
-History search. Config at `config/atuin/config.toml`, symlinked to `~/.config/atuin/` by `make xdg`. Binary installed by mise (`make tools`).
+History search. Config at `config/atuin/config.toml`, symlinked to `~/.config/atuin/` by `make xdg`. Binary installed by mise (`make tools`). Bash uses `ble.sh` as the preferred preexec backend when installed, with `bash-preexec` kept as fallback. `make tools` installs those Bash-only backends only when the login shell is Bash; pass `BASH_TOOLS=1` to force them.
 
 Non-defaults: `inline_height = 20`, `enter_accept = true` (Tab to edit before running), sync v2 on.
 
