@@ -30,13 +30,16 @@ fi
 # mise supports the same auto-load-per-directory pattern via [env] in mise.toml
 # (including .env files), with the added benefit of managing tool versions.
 _eval_if_found mise activate "$_shell"
-# Cursor dump_bash_state dumps shell functions but only exported vars.
-# mise()'s body references $__MISE_EXE, which `mise activate` leaves unexported.
-# Without this, replayed Cursor shells fork-storm through command_not_found_handle.
-for _v in __MISE_EXE __MISE_FLAGS __MISE_HOOK_ENABLED __MISE_BASH_CHPWD_RAN; do
-    [ -n "${!_v+x}" ] && export "$_v"
-done
-unset _v
+# Cursor dump_bash_state dumps Bash functions but only exported vars. mise()'s
+# body references $__MISE_EXE, which `mise activate bash` leaves unexported.
+# Without this, replayed Cursor Bash shells can fork-storm through
+# command_not_found_handle. Keep this Bash-only; zsh does not need it.
+if [ -n "${BASH_VERSION:-}" ]; then
+    [ -n "${__MISE_EXE+x}" ] && export __MISE_EXE
+    [ -n "${__MISE_FLAGS+x}" ] && export __MISE_FLAGS
+    [ -n "${__MISE_HOOK_ENABLED+x}" ] && export __MISE_HOOK_ENABLED
+    [ -n "${__MISE_BASH_CHPWD_RAN+x}" ] && export __MISE_BASH_CHPWD_RAN
+fi
 
 _eval_if_found uv generate-shell-completion "$_shell"
 _eval_if_found kubectl completion "$_shell"
