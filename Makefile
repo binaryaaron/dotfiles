@@ -117,6 +117,7 @@ install: check-email ensure-dirs tools xdg gitconfig shell-links
 
 gitconfig: check-email check-signingkey ensure-dirs
 	@$(BASH_INIT); \
+	_safe_symlink "$(DOTFILES)/bin/git-dotfiles-helpers" "$(LOCAL_BIN)/git-dotfiles-helpers" && \
 	. $(DOTFILES)/git/init.sh && \
 	setup_gitconfig "$(EMAIL)" "$(NAME)" "$(SIGNINGKEY)"
 

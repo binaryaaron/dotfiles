@@ -1,0 +1,262 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+DOTFILES="${DOTFILES:-$HOME/dotfiles}"
+UTILS="$DOTFILES/shell/utils.sh"
+if [ -r "$UTILS" ]; then
+    : "${_UTILS_SOURCED:=}"
+    . "$UTILS"
+fi
+
+usage() {
+    cat <<'EOF'
+Usage: git dotfiles-helpers COMMAND [ARGS]
+
+Commands:
+  help
+  aliases
+  files unstaged-tracked
+  branches point [BASE]
+  branches gone
+  branches prune [--dry-run|--apply] [--integration-ref REF]
+  worktrees prune [--dry-run|--apply] [--integration-ref REF]
+  rebase-main [BASE] [--interactive] [--no-fetch]
+  signoffs [BASE]
+
+Destructive cleanup defaults to --dry-run.
+EOF
+}
+
+die() {
+    printf 'git-dotfiles-helpers: %s\n' "$*" >&2
+    exit 125
+}
+
+log() {
+    printf 'git-dotfiles-helpers: %s\n' "$*" >&2
+}
+
+log_if() {
+    local verbose="$1"
+    shift
+    [ "$verbose" -eq 0 ] || log "$@"
+}
+
+need_git_repo() {
+    git rev-parse --is-inside-work-tree >/dev/null 2>&1 || die "not inside a git work tree"
+}
+
+need_utils_function() {
+    declare -F "$1" >/dev/null 2>&1 || die "$1 unavailable, expected $UTILS"
+}
+
+need_clean_worktree() {
+    git diff-index --quiet HEAD -- || die "working tree is not clean"
+}
+
+cmd_aliases() {
+    git config --includes --get-regexp '^alias\.' || true
+}
+
+cmd_files() {
+    case "${1:-}" in
+        unstaged-tracked)
+            [ "$#" -eq 1 ] || die "files unstaged-tracked accepts no arguments"
+            git status --porcelain=v1 --untracked-files=no |
+                awk 'substr($0, 2, 1) != " " { print substr($0, 4) }'
+            ;;
+        ""|-h|--help|help) usage ;;
+        *) die "unknown files command: $1" ;;
+    esac
+}
+
+cmd_branches_point() {
+    [ "$#" -le 1 ] || die "branches point accepts at most one base ref"
+    local base="${1:-main}"
+    [ "$#" -gt 0 ] || log "branch-point: defaulting base to local main"
+    git merge-base "$base" HEAD
+}
+
+cmd_branches_gone() {
+    git branch -vv |
+        awk '/: gone]/{ if ($1 == "*") print $2; else print $1 }'
+}
+
+branch_is_checked_out() {
+    local branch="$1"
+    git worktree list --porcelain |
+        awk -v ref="branch refs/heads/$branch" '$0 == ref { found = 1 } END { exit found ? 0 : 1 }'
+}
+
+branch_dependents() {
+    local branch="$1"
+    git branch --contains "$branch" |
+        awk -v branch="$branch" '{ sub(/^[* ] /, ""); if ($0 != branch) print }'
+}
+
+branch_prune_candidates() {
+    local integration_ref="$1" verbose="$2"
+    local branch contains
+
+    while IFS= read -r branch; do
+        [ "$branch" != "main" ] || continue
+        if ! _branch_merged_into "$integration_ref" "$branch"; then
+            continue
+        fi
+
+        if branch_is_checked_out "$branch"; then
+            log_if "$verbose" "branch-prune: skip $branch, checked out in a worktree"
+            continue
+        fi
+
+        contains=$(branch_dependents "$branch")
+        if [ -n "$contains" ]; then
+            if [ "$verbose" -ge 1 ]; then
+                log "branch-prune: skip $branch, required by:"
+                while IFS= read -r dependent; do
+                    log "  $dependent"
+                done <<< "$contains"
+            fi
+            continue
+        fi
+
+        printf '%s\n' "$branch"
+    done < <(git for-each-ref refs/heads/ --format='%(refname:short)')
+}
+
+cmd_branches_prune() {
+    need_utils_function _branch_merged_into
+    local dry_run=1 integration_ref="${INTEGRATION_REF:-origin/main}" verbose="${VERBOSE:-1}"
+    while [ "$#" -gt 0 ]; do
+        case "$1" in
+            --dry-run) dry_run=1 ;;
+            --apply) dry_run=0 ;;
+            --integration-ref) shift; [ "$#" -gt 0 ] || die "--integration-ref needs a value"; integration_ref="$1" ;;
+            --verbose) verbose=2 ;;
+            --quiet) verbose=0 ;;
+            *) die "unknown branches prune argument: $1" ;;
+        esac
+        shift
+    done
+
+    git rev-parse --verify "$integration_ref^{commit}" >/dev/null 2>&1 ||
+        die "ref '$integration_ref' not found, try: git fetch"
+
+    local candidates=()
+    local branch
+
+    log_if "$verbose" "branch-prune: integration ref $integration_ref"
+    [ "$dry_run" -eq 0 ] || log_if "$verbose" "branch-prune: dry run, pass --apply to delete"
+
+    while IFS= read -r branch; do
+        candidates+=("$branch")
+    done < <(branch_prune_candidates "$integration_ref" "$verbose")
+
+    if [ "${#candidates[@]}" -eq 0 ]; then
+        log_if "$verbose" "branch-prune: no eligible local branches"
+        return 0
+    fi
+
+    log_if "$verbose" "branch-prune: ${#candidates[@]} eligible local branch(es)"
+
+    if [ "$dry_run" -eq 1 ]; then
+        for branch in "${candidates[@]}"; do
+            printf 'would delete: %s (merged into %s)\n' "$branch" "$integration_ref"
+        done
+        return 0
+    fi
+
+    for branch in "${candidates[@]}"; do
+        log_if "$verbose" "branch-prune: deleting $branch, merged into $integration_ref"
+        git branch -D "$branch"
+    done
+    log_if "$verbose" "branch-prune: done"
+}
+
+cmd_branches() {
+    local sub="${1:-}"
+    [ "$#" -gt 0 ] && shift
+    case "$sub" in
+        point) cmd_branches_point "$@" ;;
+        gone) [ "$#" -eq 0 ] || die "branches gone accepts no arguments"; cmd_branches_gone ;;
+        prune) cmd_branches_prune "$@" ;;
+        ""|-h|--help) usage ;;
+        *) die "unknown branches command: $sub" ;;
+    esac
+}
+
+cmd_worktrees_prune() {
+    need_utils_function prune_worktrees
+    local dry_run=1 integration_ref="${INTEGRATION_REF:-origin/main}" verbose="${VERBOSE:-1}"
+    while [ "$#" -gt 0 ]; do
+        case "$1" in
+            --dry-run) dry_run=1 ;;
+            --apply) dry_run=0 ;;
+            --integration-ref) shift; [ "$#" -gt 0 ] || die "--integration-ref needs a value"; integration_ref="$1" ;;
+            --verbose) verbose=2 ;;
+            --quiet) verbose=0 ;;
+            *) die "unknown worktrees prune argument: $1" ;;
+        esac
+        shift
+    done
+    DRY_RUN="$dry_run" VERBOSE="$verbose" INTEGRATION_REF="$integration_ref" prune_worktrees
+}
+
+cmd_worktrees() {
+    local sub="${1:-}"
+    [ "$#" -gt 0 ] && shift
+    case "$sub" in
+        prune) cmd_worktrees_prune "$@" ;;
+        ""|-h|--help) usage ;;
+        *) die "unknown worktrees command: $sub" ;;
+    esac
+}
+
+cmd_rebase_main() {
+    need_git_repo
+    local base="origin/main" interactive=0 fetch=1
+    while [ "$#" -gt 0 ]; do
+        case "$1" in
+            -i|--interactive) interactive=1 ;;
+            --no-fetch) fetch=0 ;;
+            --base) shift; [ "$#" -gt 0 ] || die "--base needs a value"; base="$1" ;;
+            -*) die "unknown rebase-main argument: $1" ;;
+            *) base="$1" ;;
+        esac
+        shift
+    done
+    need_clean_worktree
+    if [ "$fetch" -eq 1 ]; then
+        log "rebase-main: fetching origin"
+        git fetch --prune origin
+    fi
+    log "rebase-main: rebasing onto $base"
+    [ "$interactive" -eq 0 ] && git rebase "$base" || git rebase -i "$base"
+}
+
+cmd_signoffs() {
+    need_git_repo
+    [ "$#" -le 1 ] || die "signoffs accepts at most one base ref"
+    need_clean_worktree
+    local base="${1:-main}"
+    log "signoffs: rebasing with signoff onto $base"
+    git rebase "$base" --signoff
+}
+
+main() {
+    local cmd="${1:-}"
+    [ "$#" -gt 0 ] && shift
+    case "$cmd" in
+        aliases) [ "$#" -eq 0 ] || die "aliases accepts no arguments"; cmd_aliases ;;
+        files) cmd_files "$@" ;;
+        branches) cmd_branches "$@" ;;
+        worktrees) cmd_worktrees "$@" ;;
+        rebase-main) cmd_rebase_main "$@" ;;
+        signoffs) cmd_signoffs "$@" ;;
+        ""|-h|--help|help) usage ;;
+        *) die "unknown command: $cmd" ;;
+    esac
+}
+
+main "$@"

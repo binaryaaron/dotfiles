@@ -22,7 +22,8 @@ _write_shared_gitconfig() {
 	l5 = l -5
 	ls = slog --decorate -25
 	ll = slog --decorate --numstat -100
-	la = "!git config -l | grep alias | cut -c 7-"
+	aliases = dotfiles-helpers aliases
+	la = aliases
 	type = cat-file -t
 	dump = cat-file -p
 	brs = "!{ printf 'BRANCH\tDATE\t+/-\tMESSAGE\n'; git for-each-ref --sort=-creatordate --format='%(refname:short)\t%(creatordate:relative)\t%(ahead-behind:HEAD)\t%(contents:subject)' refs/heads; } | awk -F'\t' '{ printf \"%-40s  %-18s  %-10s  %-.*s\\n\", $1, $2, $3, 50, $4 }'"
@@ -34,13 +35,15 @@ _write_shared_gitconfig() {
 	br = branch
 	incoming = log HEAD..@{upstream}
 	outgoing = log @{upstream}..HEAD
-	prune-local = !git branch -vv | awk '/: gone]/{print $1}' | xargs git branch -D
-	unstaged-tracked = !status --short | grep '^ .' | awk '{print $1}'
-	rebase-latest-main = "!git fetch && git rebase -i origin/main"
+	gone = dotfiles-helpers branches gone
+	prune-local = dotfiles-helpers branches prune
+	prune-worktrees = dotfiles-helpers worktrees prune
+	unstaged-tracked = dotfiles-helpers files unstaged-tracked
+	rebase-latest-main = dotfiles-helpers rebase-main --interactive
 	restore-staged = restore --staged .
 	restore-all = "!git restore --staged . && git restore ."
-	add-signoffs = rebase main --signoff
-	branch-point = "!git merge-base ${1:-main} HEAD"
+	add-signoffs = dotfiles-helpers signoffs main
+	branch-point = dotfiles-helpers branches point
 [color]
 	ui = auto
 [push]

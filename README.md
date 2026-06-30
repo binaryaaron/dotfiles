@@ -18,7 +18,7 @@ No `~/.gitconfig` yet? A minimal one gets created with your identity and an OS-a
 
 ### What's included
 
-Aliases: `git l`, `git brs`, `git brsa`, `git ls`, `git ll`, `git incoming`, `git outgoing`, `git prune-local`, `git restore-all`, and more.
+Aliases: `git l`, `git brs`, `git brsa`, `git ls`, `git ll`, `git incoming`, `git outgoing`, `git prune-local`, `git restore-all`, and more. Multi-step helpers delegate to `git dotfiles-helpers`, symlinked from `bin/git-dotfiles-helpers` by `make gitconfig` and `make xdg`.
 
 Settings: `push.autoSetupRemote`, `pull.rebase`, `rerere`, SSH commit signing, LFS filters, global gitignore.
 
@@ -54,7 +54,7 @@ Tool installation no longer needs root. `make tools` installs mise into `~/.loca
 
 ```text
 make install       EMAIL=...   full bootstrap (ensure-dirs + xdg + gitconfig + shell-links + tools)
-make gitconfig     EMAIL=...   shared gitconfig + [include] in ~/.gitconfig
+make gitconfig     EMAIL=...   shared gitconfig + helper symlink + [include] in ~/.gitconfig
 make xdg                       XDG dirs + symlink configs, nvim, and bins
 make shell-links               ~/.bashrc, ~/.zshrc, ~/.zprofile, ~/.bash_profile, ~/.bashenv, ~/.dircolors
 make vim                       symlink ~/.vimrc and ~/.vim, install Vundle plugins
