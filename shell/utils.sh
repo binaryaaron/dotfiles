@@ -54,64 +54,6 @@ _branch_merged_into() {
   [[ $(git cherry "$integration" "$(git commit-tree "$(git rev-parse "$branch^{tree}")" -p "$merge_base" -m _)") == "-"* ]]
 }
 
-prune_squash_merged_branches() {
-  # lightly modified from https://github.com/dougthor42/dotfiles/blob/main/git_prune_squash_merged.sh
-  DRY_RUN=${DRY_RUN:-1}
-  VERBOSE=${VERBOSE:-1}
-  local INTEGRATION_REF="${INTEGRATION_REF:-origin/main}"
-
-  echo "Pruning local branches merged into $INTEGRATION_REF..."
-  if [[ $DRY_RUN -eq 1 ]]; then
-      echo "DRY RUN - no branches will be deleted."
-  fi
-
-  if ! git rev-parse --verify "$INTEGRATION_REF^{commit}" >/dev/null 2>&1; then
-      echo "Ref '$INTEGRATION_REF' not found (try: git fetch)."
-      return 1
-  fi
-
-  git for-each-ref refs/heads/ "--format=%(refname:short)" |
-      while read -r branch; do
-          [[ "$branch" == "main" ]] && continue
-
-          if [[ $VERBOSE -eq 2 ]]; then
-              echo "Checking $branch ..."
-          fi
-
-          if ! _branch_merged_into "$INTEGRATION_REF" "$branch"; then
-              continue
-          fi
-
-          # If we got down here then we already know that $branch is merged into
-          # $INTEGRATION_REF. We still want to check if it's a dependency of other branches.
-
-          # Is the branch included in any other branch?
-          # `--contains` will always show itself, so remove that line.
-          CONTAINS=$(git branch --contains "$branch" | sed -e "\:^[\* ] $branch$:d")
-
-          if [[ -n $CONTAINS ]]; then
-              if [[ $VERBOSE -eq 1 ]]; then
-                  echo "$branch is a dependency of other branch(es). Not deleting"
-                  echo "$CONTAINS"
-              fi
-              continue
-          fi
-
-          if [[ $DRY_RUN -eq 1 ]]; then
-              echo "$branch is merged into $INTEGRATION_REF and can be deleted"
-              continue
-          fi
-
-          if [[ $VERBOSE -eq 1 ]]; then
-              echo "Deleting $branch (merged into $INTEGRATION_REF)"
-          fi
-          git branch -D "$branch"
-
-      done
-
-}
-
-
 # Prune/remove linked worktrees for the repo containing the current directory only.
 # Removes a worktree when: (1) HEAD matches @{upstream}, or (2) the branch is merged
 # into INTEGRATION_REF (default origin/main), including squash merges via _branch_merged_into.
@@ -139,6 +81,7 @@ prune_worktrees() {
 
   while IFS=$'\t' read -r wt_path branch_info lock_reason; do
       [ "$wt_path" = "$main_root" ] && continue
+      local branch_display="${branch_info#refs/heads/}"
 
       if [ "$branch_info" = "detached" ]; then
         [ "$VERBOSE" -ge 1 ] && printf 'skip: %s (detached HEAD)\n' "$wt_path" >&2
@@ -164,10 +107,22 @@ prune_worktrees() {
 
       if [ "$DRY_RUN" -eq 1 ]; then
         [ "$VERBOSE" -ge 1 ] && printf 'would remove: %s (%s) %s locked=%s\n' \
-          "$wt_path" "$branch_info" "$reason" "${lock_reason:-no}"
+          "$wt_path" "$branch_display" "$reason" "${lock_reason:-no}"
         continue
       fi
-      git worktree remove --force "$wt_path" 2>/dev/null || git worktree remove "$wt_path"
+
+      if [ -n "$lock_reason" ]; then
+        [ "$VERBOSE" -ge 1 ] && printf 'skip: %s (%s) locked: %s\n' \
+          "$wt_path" "$branch_display" "$lock_reason" >&2
+        continue
+      fi
+
+      local remove_output
+      if ! remove_output="$(git worktree remove --force "$wt_path" 2>&1)"; then
+        [ "$VERBOSE" -ge 1 ] && printf 'skip: %s (%s) remove failed: %s\n' \
+          "$wt_path" "$branch_display" "$remove_output" >&2
+        continue
+      fi
     done < <(git worktree list --porcelain | awk '
     /^worktree / { path=$2; branch=""; detached=0; locked="" }
     /^branch /   { branch=$2 }

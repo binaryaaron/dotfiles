@@ -91,8 +91,18 @@ branch_is_checked_out() {
 
 branch_dependents() {
     local branch="$1"
+    local integration_ref="${2:-}"
+    local integration_branch="${integration_ref#refs/heads/}"
+    integration_branch="${integration_branch#refs/remotes/origin/}"
+    integration_branch="${integration_branch#origin/}"
     git branch --contains "$branch" |
-        awk -v branch="$branch" '{ sub(/^[* ] /, ""); if ($0 != branch) print }'
+        awk -v branch="$branch" -v integration_branch="$integration_branch" '
+            {
+                sub(/^[* ] /, "")
+                if ($0 == branch || $0 == "main" || $0 == integration_branch) next
+                print
+            }
+        '
 }
 
 branch_prune_candidates() {
@@ -110,12 +120,12 @@ branch_prune_candidates() {
             continue
         fi
 
-        contains=$(branch_dependents "$branch")
+        contains=$(branch_dependents "$branch" "$integration_ref")
         if [ -n "$contains" ]; then
             if [ "$verbose" -ge 1 ]; then
-                log "branch-prune: skip $branch, required by:"
+                log "branch-prune: skip $branch, contained by local branch(es):"
                 while IFS= read -r dependent; do
-                    log "  $dependent"
+                    log "branch-prune:   $dependent prevents deleting $branch"
                 done <<< "$contains"
             fi
             continue
