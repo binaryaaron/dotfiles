@@ -17,3 +17,6 @@
 [[ $- == *i* ]] || return
 
 [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"
+
+# attach env hook (stable; safe to commit to dotfiles)
+[ -r /opt/devmachine_assets/env/forwarded-session.sh ] && . /opt/devmachine_assets/env/forwarded-session.sh

@@ -43,6 +43,9 @@ uv          = "latest"
 # 2026.4; `exe = "btm"` is required because bottom's release archive contains
 # `btm`, not `bottom`, so the default "binary name == repo name" rule fails).
 "github:ClementTsang/bottom" = { version = "latest", exe = "btm" }
+"npm:@openai/codex" = "0.146.0"
+"npm:@anthropic-ai/claude-code" = "2.1.212"
+"github:herdrdev/herdr" = "0.8.0"
 
 [settings]
 # Write mise.lock in projects that have a mise.toml -- reproducible tool versions.
@@ -53,6 +56,7 @@ lockfile_platforms = ["macos-arm64", "linux-x64", "linux-arm64"]
 # Let mise honor .nvmrc / .python-version / .tool-versions files in repos
 # that don't (yet) have a mise.toml.
 idiomatic_version_file_enable_tools = ["node", "python"]
+trusted_config_paths = ["$HOME/dev/"]
 
 [settings.node]
 # Skip GPG verification of Node release SHASUMs. The nodejs.org download is

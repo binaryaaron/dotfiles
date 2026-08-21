@@ -83,3 +83,6 @@ export PATH
 unset -f _dotfiles_prepend_path _dotfiles_append_path
 
 [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
+
+export MISE_TRUSTED_CONFIG_PATHS="$HOME/dev"
+

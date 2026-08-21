@@ -4,6 +4,10 @@
 **/*.db-wal
 **/key
 
+# mise per-machine configuration and secrets
+**/mise.local.toml
+**/.mise.local.toml
+
 # atuin install receipt
 config/atuin/atuin-receipt.json
 
