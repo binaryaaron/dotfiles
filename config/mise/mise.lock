@@ -85,6 +85,25 @@ checksum = "sha256:d53a9f93fccfdfcc55632927bf51002f5add0aa7990bcdf508ffbd84ac658
 url = "https://github.com/herdrdev/herdr/releases/download/v0.8.0/herdr-macos-aarch64"
 url_api = "https://api.github.com/repos/herdrdev/herdr/releases/assets/500422629"
 
+[[tools."gitlab:gitlab-org/cli"]]
+version = "1.115.0"
+backend = "gitlab:gitlab-org/cli"
+
+[tools."gitlab:gitlab-org/cli"."platforms.linux-arm64"]
+checksum = "sha256:f5b2f790fd04949b9ed3f3853e2d4b8b088c8de04e8d1eafd165d000bc928af2"
+url = "https://gitlab.com/gitlab-org/cli/-/releases/v1.115.0/downloads/glab_1.115.0_linux_arm64.tar.gz"
+url_api = "https://gitlab.com/api/v4/projects/gitlab-org%2Fcli/packages/generic/glab/1%2E115%2E0/glab_1%2E115%2E0_linux_arm64%2Etar%2Egz"
+
+[tools."gitlab:gitlab-org/cli"."platforms.linux-x64"]
+checksum = "sha256:3744c9f393fdf0aabd329e536aec3501ce780d5f7785eb2cbe0f1d3efa0f436b"
+url = "https://gitlab.com/gitlab-org/cli/-/releases/v1.115.0/downloads/glab_1.115.0_linux_amd64.tar.gz"
+url_api = "https://gitlab.com/api/v4/projects/gitlab-org%2Fcli/packages/generic/glab/1%2E115%2E0/glab_1%2E115%2E0_linux_amd64%2Etar%2Egz"
+
+[tools."gitlab:gitlab-org/cli"."platforms.macos-arm64"]
+checksum = "sha256:1a25e7435b981567de42432fe3a035abc8de61b41324ed8baab70a4c88f32047"
+url = "https://gitlab.com/gitlab-org/cli/-/releases/v1.115.0/downloads/glab_1.115.0_darwin_arm64.tar.gz"
+url_api = "https://gitlab.com/api/v4/projects/gitlab-org%2Fcli/packages/generic/glab/1%2E115%2E0/glab_1%2E115%2E0_darwin_arm64%2Etar%2Egz"
+
 [[tools.jq]]
 version = "1.8.2"
 backend = "aqua:jqlang/jq"

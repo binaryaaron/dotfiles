@@ -32,6 +32,8 @@ jq          = "latest"
 yq          = "latest"
 ripgrep     = "latest"
 github-cli  = "latest"
+"gitlab:gitlab-org/cli" = "latest"
+
 
 # Runtimes (replacing nvm; project mise.toml files should pin specific versions)
 node        = "lts"
